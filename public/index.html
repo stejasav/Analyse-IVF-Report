@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Analyse My IVF Reports – Trusted Fertility Insights</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <img src="./images/logo.png" alt="Analyse My IVF Reports" class="logo-img" />
+      <button id="navUploadBtn" class="btn small">Upload Reports</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <h2 class="sub-heading">Analyse Your IVF Reports</h2>
+        <h1>Understand Your IVF Reports — Instantly</h1>
+        <p>Upload your fertility reports and let our AI summarise them into clear, doctor-friendly insights — so you can make informed decisions confidently.</p>
+        <button id="openUpload" class="btn hero-btn">Upload My Reports</button>
+        <p class="hero-note">Fast • Secure • Confidential • Free</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits">
+    <h2 class="section-title">Why Analyse with Us?</h2>
+    <div class="benefit-grid">
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" alt="">
+        <h3>AI-Driven Accuracy</h3>
+        <p>Our open-source medical models read your IVF reports to highlight key results in seconds.</p>
+      </div>
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png" alt="">
+        <h3>Private & Secure</h3>
+        <p>Your files are processed locally and never stored or shared — your privacy matters most.</p>
+      </div>
+      <div class="benefit">
+        <img src="https://cdn-icons-png.flaticon.com/512/1828/1828643.png" alt="">
+        <h3>Clarity Before Consultation</h3>
+        <p>Be prepared before meeting your fertility specialist — understand your reports first.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="how-it-works">
+    <h2 class="section-title">How It Works</h2>
+    <div class="steps-container">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3>Upload Your Reports</h3>
+        <p>Simply drag and drop or select your IVF test results, scans, and medical documents.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3>AI Analysis</h3>
+        <p>Our advanced AI instantly reads and interprets your medical data with precision.</p>
+      </div>
+      <div class="step-arrow">→</div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3>Get Clear Insights</h3>
+        <p>Receive easy-to-understand summaries highlighting what matters most for your journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Section -->
+  <section class="trust-section">
+    <div class="trust-content">
+      <h2 class="section-title">Built for Your Peace of Mind</h2>
+      <div class="trust-grid">
+        <div class="trust-item">
+          <span class="trust-icon">🔒</span>
+          <h4>Zero Data Storage</h4>
+          <p>Your reports are never saved to any server. Analysis happens in real-time and data is immediately discarded.</p>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">⚕️</span>
+          <h4>Medical-Grade AI</h4>
+          <p>Powered by advanced language models trained on medical literature to understand fertility reports accurately.</p>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">✨</span>
+          <h4>Always Free</h4>
+          <p>No hidden costs, no subscriptions. We believe everyone deserves access to understanding their health.</p>
+        </div>
+        <div class="trust-item">
+          <span class="trust-icon">👥</span>
+          <h4>Not Medical Advice</h4>
+          <p>Our insights are for educational purposes to help you prepare better questions for your doctor.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="cta-content">
+      <h2>Ready to Understand Your Reports?</h2>
+      <p>Join thousands who've gained clarity on their fertility journey</p>
+      <button id="ctaUploadBtn" class="btn primary">Get Started — It's Free</button>
+    </div>
+  </section>
+
+  <!-- Modal Upload -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Upload your reports</h2>
+      <p>Accepted: PDF / JPG / PNG (max 15 MB each)</p>
+      <div id="dropzone" class="dropzone">
+        <p>Drag & drop files here or click to browse</p>
+      </div>
+      <input id="fileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp" style="display:none;" />
+      <div id="fileList" class="file-list"></div>
+      <div class="actions">
+        <button id="submitFiles" class="btn primary">Analyse</button>
+        <button id="cancel" class="btn secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <p>Analysing your reports…</p>
+  </div>
+
+  <!-- Results -->
+  <section class="results container hidden" id="results"></section>
+
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <span>|</span>
+        <a href="#">Terms & Conditions</a>
+        <span>|</span>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-copy">
+        <p>Copyright © 2025 | All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>

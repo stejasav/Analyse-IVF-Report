@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Your IVF Report Insights — Analyse My IVF Reports</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #1F232D;
+      --accent-hover: #2AD497;
+      --text: #1F232D;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card-bg: #ffffff;
+      --light-bg: #f7fafc;
+      --success-bg: #ecfdf5;
+      --success-border: #a7f3d0;
+      --success-text: #065f46;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Navbar */
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8%;
+      z-index: 10;
+    }
+
+    nav img { height: 52px; cursor: pointer; }
+
+    nav button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 22px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    nav button:hover {
+      background: var(--accent-hover);
+      color: var(--accent);
+      box-shadow: 0 0 12px rgba(42, 212, 151, 0.3);
+    }
+
+    /* Header */
+    .page-header {
+      text-align: center;
+      padding-top: 110px;
+      padding-bottom: 16px;
+    }
+
+    .page-header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* Status Banner */
+    .status-banner {
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      border-radius: 8px;
+      max-width: 930px;
+      margin: 32px auto 24px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-banner .icon {
+      font-size: 1.25rem;
+    }
+    .status-banner .text {
+      font-size: 0.95rem;
+      color: var(--success-text);
+      font-weight: 500;
+    }
+
+    /* Progress */
+    .progress-wrapper {
+      max-width: 800px;
+      margin: 0 auto 40px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 100%;
+      height: 10px;
+      background: var(--accent-hover);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 8% 60px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 28px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+      transition: transform 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #f3f4f6;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-header h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card-header .icon { font-size: 1.3rem; }
+
+    .card p, .card li {
+      font-size: 0.96rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .list { list-style: none; padding: 0; margin: 0; }
+
+    .list li {
+      background: var(--light-bg);
+      padding: 12px 14px;
+      border-left: 4px solid #d1d5db;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .list.findings li { border-left-color: var(--accent-hover); }
+    .list.warnings li {
+      background: #fef2f2;
+      border-left-color: #ef4444;
+    }
+    .list.steps li {
+      background: #f0fdf4;
+      border-left-color: var(--accent-hover);
+    }
+    .list.questions li { border-left-color: #8b5cf6; }
+
+    /* Metrics */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .metric {
+      text-align: center;
+      background: var(--light-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+
+    .metric-value {
+      color: var(--accent-hover);
+      font-weight: 700;
+      font-size: 1.8rem;
+    }
+
+    .metric-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .cta button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .cta button:hover {
+      background: var(--accent-hover);
+      color: var(--accent);
+      box-shadow: 0 0 15px rgba(42, 212, 151, 0.3);
+    }
+
+    /* Footer */
+    footer {
+      background: #41444B;
+      color: #fff;
+      text-align: center;
+      font-size: 0.9rem;
+      padding: 20px;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; padding: 0 24px; }
+      .card { padding: 22px; }
+      .status-banner { flex-direction: column; text-align: center; }
+      .metrics { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav>
+    <img src="./images/logo.png" alt="Analyse My IVF Reports" onclick="window.location.href='/'" />
+    <button onclick="window.location.href='/'">Upload New Reports</button>
+  </nav>
+
+  <!-- Header -->
+  <div class="page-header">
+    <h1>📊 Your IVF Report Insights</h1>
+    <p>AI-driven fertility insights designed to help you understand your reports before your next consultation.</p>
+  </div>
+
+  <!-- Status -->
+  <div class="status-banner">
+    <span class="icon">✅</span>
+    <span class="text">Analysis complete — 3 reports processed successfully</span>
+  </div>
+
+  <!-- Cards -->
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <span class="icon">📋</span><h2>Summary</h2>
+      </div>
+      <p>Your reports show a balanced ovarian response and well-timed hormonal patterns with mild variations that can be optimized for better outcomes.</p>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">🔍</span><h2>Key Findings</h2></div>
+      <ul class="list findings">
+        <li>AMH: 3.2 ng/mL — healthy ovarian reserve</li>
+        <li>FSH/LH ratio normal — supports ovulation stability</li>
+        <li>Endometrial thickness: 8.5 mm — adequate for implantation</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">⚠️</span><h2>Points Requiring Attention</h2></div>
+      <ul class="list warnings">
+        <li>Slightly elevated prolactin — may affect hormonal rhythm</li>
+        <li>Endometrial lining below optimal range in one phase</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">📊</span><h2>IVF Readiness Metrics</h2></div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-value">90%</div><div class="metric-label">Endometrial Receptivity</div></div>
+        <div class="metric"><div class="metric-value">85%</div><div class="metric-label">Ovarian Response</div></div>
+        <div class="metric"><div class="metric-value">78%</div><div class="metric-label">Hormonal Sync</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">✅</span><h2>Recommended Next Steps</h2></div>
+      <ul class="list steps">
+        <li>Repeat hormone profile after 6 weeks</li>
+        <li>Consult fertility specialist regarding prolactin management</li>
+        <li>Schedule follicular monitoring for upcoming cycle</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="icon">❓</span><h2>Questions for Your Doctor</h2></div>
+      <ul class="list questions">
+        <li>Should medication be considered to regulate prolactin?</li>
+        <li>Is my current endometrial pattern ideal for implantation?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta">
+    <button onclick="window.location.href='/'">🔁 Analyze Another Report</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Analyse My IVF Reports — For educational purposes only.  
+    Please consult your fertility specialist for medical advice.
+  </footer>
+</body>
+</html>
