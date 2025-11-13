@@ -13,19 +13,30 @@
       --muted: #6b7280;
       --border: #e5e7eb;
       --card-bg: #ffffff;
-      --light-bg: #f7fafc;
-      --success-bg: #ecfdf5;
-      --success-border: #a7f3d0;
-      --success-text: #065f46;
+      --warning-bg: #fef2f2;
+      --footer-bg: #41444B;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    
+    html, body {
+      height: 100%;
+    }
+    
     body {
       font-family: "Poppins", sans-serif;
-      background: linear-gradient(180deg, #f9fafb 0%, #f3f4f6 100%);
       color: var(--text);
       line-height: 1.6;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Page wrapper to push footer down */
+    .page-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
     }
 
     /* Navbar */
@@ -40,10 +51,9 @@
       justify-content: space-between;
       padding: 0 8%;
       z-index: 10;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
-
-    nav img { height: 52px; cursor: pointer; }
-
+    nav img { height: 50px; cursor: pointer; }
     nav button {
       background: var(--accent);
       color: #fff;
@@ -52,194 +62,191 @@
       padding: 10px 22px;
       font-weight: 500;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.3s ease;
     }
-
     nav button:hover {
       background: var(--accent-hover);
       color: var(--accent);
-      box-shadow: 0 0 12px rgba(42, 212, 151, 0.3);
+      box-shadow: 0 0 12px rgba(42,212,151,0.3);
     }
 
     /* Header */
-    .page-header {
-      text-align: center;
-      padding-top: 110px;
-      padding-bottom: 16px;
-    }
+    .page-header { text-align: center; padding-top: 110px; padding-bottom: 10px; }
+    .page-header h1 { font-size: 2rem; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+    .page-header p { color: var(--muted); font-size: 1rem; max-width: 640px; margin: 0 auto; }
 
-    .page-header h1 {
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-
-    .page-header p {
-      color: var(--muted);
-      font-size: 1rem;
-      max-width: 640px;
+    /* Centered wrapper for status + cards + disclaimer */
+    .main-container {
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 0 6%;
+      flex: 1;
     }
 
     /* Status Banner */
     .status-banner {
-      background: var(--success-bg);
-      border: 1px solid var(--success-border);
-      border-radius: 8px;
-      max-width: 930px;
-      margin: 32px auto 24px;
-      padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .status-banner .icon {
-      font-size: 1.25rem;
-    }
-    .status-banner .text {
-      font-size: 0.95rem;
-      color: var(--success-text);
-      font-weight: 500;
-    }
-
-    /* Progress */
-    .progress-wrapper {
-      max-width: 800px;
-      margin: 0 auto 40px;
-      background: #fff;
-      border: 1px solid var(--border);
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
       border-radius: 10px;
+      width: 100%;
+      margin: 24px auto;
       padding: 18px 24px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    .progress-label {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(42, 212, 151, 0.08);
+      color: #065f46;
+      font-weight: 600;
+    }
+
+    /* Empty state banner */
+    .status-banner.empty {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+    }
+
+    /* Empty state container */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+    .empty-state h2 {
+      font-size: 1.5rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+    .empty-state p {
       color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 6px;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 30px;
     }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background: #e2e8f0;
-      border-radius: 6px;
-      overflow: hidden;
+    .empty-state button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 32px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.3s ease;
     }
-
-    .progress-fill {
-      width: 100%;
-      height: 10px;
+    .empty-state button:hover {
       background: var(--accent-hover);
+      color: var(--accent);
+      box-shadow: 0 0 15px rgba(42,212,151,0.3);
     }
 
-    /* Container */
+    /* Masonry Container */
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0 8% 60px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-      gap: 28px;
+      column-count: 2;
+      column-gap: 28px;
+      margin-top: 10px;
+      margin-bottom: 30px;
     }
 
     /* Card */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 28px;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-      transition: transform 0.25s ease;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.25s ease;
+      break-inside: avoid;
+      display: inline-block;
+      width: 100%;
     }
-
-    .card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-    }
-
     .card-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-bottom: 1px solid #f3f4f6;
-      padding-bottom: 14px;
-      margin-bottom: 18px;
+      border-bottom: 2px solid #f3f4f6;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
     }
-
     .card-header h2 {
       font-size: 1.15rem;
       font-weight: 600;
       color: var(--accent);
+      letter-spacing: -0.01em;
     }
-
-    .card-header .icon { font-size: 1.3rem; }
-
-    .card p, .card li {
-      font-size: 0.96rem;
-      color: var(--text);
+    .card-content {
+      font-size: 0.95rem;
       line-height: 1.7;
+      color: #374151;
     }
 
-    .list { list-style: none; padding: 0; margin: 0; }
+    /* Warning card */
+    .card.warning {
+      background: var(--warning-bg);
+      border-left: 5px solid #ef4444;
+    }
 
+    /* List styles */
+    .list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
     .list li {
-      background: var(--light-bg);
-      padding: 12px 14px;
-      border-left: 4px solid #d1d5db;
+      background: #f9fafb;
+      padding: 14px 16px;
+      border-left: 3px solid var(--accent-hover);
       border-radius: 6px;
       margin-bottom: 10px;
+      font-size: 0.93rem;
+      line-height: 1.6;
+      color: #374151;
     }
-
-    .list.findings li { border-left-color: var(--accent-hover); }
     .list.warnings li {
       background: #fef2f2;
       border-left-color: #ef4444;
     }
-    .list.steps li {
+    .list.success li {
       background: #f0fdf4;
-      border-left-color: var(--accent-hover);
-    }
-    .list.questions li { border-left-color: #8b5cf6; }
-
-    /* Metrics */
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 16px;
+      border-left-color: #10b981;
     }
 
-    .metric {
+    /* Disclaimer */
+    .disclaimer {
+      width: 100%;
+      background: #fff8e6;
+      border: 1px solid #fcd34d;
+      border-radius: 8px;
+      padding: 28px 24px;
+      margin: 20px auto 50px;
+      box-shadow: 0 2px 8px rgba(251,191,36,0.08);
       text-align: center;
-      background: var(--light-bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 18px;
     }
-
-    .metric-value {
-      color: var(--accent-hover);
-      font-weight: 700;
-      font-size: 1.8rem;
+    .disclaimer-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
     }
-
-    .metric-label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      margin-top: 4px;
+    .disclaimer-header h3 { color: #92400e; font-size: 1rem; font-weight: 600; }
+    .disclaimer p {
+      color: #78350f;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 850px;
+      margin: 0 auto;
     }
 
     /* CTA */
-    .cta {
-      text-align: center;
-      margin-top: 60px;
-    }
-
+    .cta { text-align: center; margin-bottom: 80px; }
     .cta button {
       background: var(--accent);
       color: #fff;
@@ -249,115 +256,135 @@
       font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.3s ease;
     }
-
     .cta button:hover {
       background: var(--accent-hover);
       color: var(--accent);
-      box-shadow: 0 0 15px rgba(42, 212, 151, 0.3);
+      box-shadow: 0 0 15px rgba(42,212,151,0.3);
     }
 
     /* Footer */
-    footer {
-      background: #41444B;
-      color: #fff;
-      text-align: center;
+    .main-footer {
+      flex-shrink: 0;
+      background: var(--footer-bg);
+      color: #ffffff;
+      padding: 28px 5%;
       font-size: 0.9rem;
-      padding: 20px;
-      margin-top: 60px;
+      margin-top: auto;
     }
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .footer-links a { color: #ffffff; text-decoration: none; transition: color 0.2s ease; }
+    .footer-links a:hover { color: var(--accent-hover); }
+    .footer-links span { color: rgba(255,255,255,0.5); }
+    .footer-copy { color: rgba(255,255,255,0.85); text-align: right; }
 
-    @media (max-width: 768px) {
-      .container { grid-template-columns: 1fr; padding: 0 24px; }
-      .card { padding: 22px; }
-      .status-banner { flex-direction: column; text-align: center; }
-      .metrics { grid-template-columns: 1fr; }
+    /* Hide elements when empty */
+    .hide { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container { column-count: 1; padding: 0 5% 40px; }
+      .main-container { padding: 0 5%; }
+      nav { padding: 0 5%; }
+      nav img { height: 44px; }
+      .page-header p{ margin: 0 5px;}
+      .footer-content { flex-direction: column; text-align: center; gap: 10px; }
+      .footer-copy { text-align: center; }
+      .empty-state { padding: 40px 20px; }
+      .empty-state-icon { font-size: 3rem; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Navbar -->
-  <nav>
-    <img src="./images/logo.png" alt="Analyse My IVF Reports" onclick="window.location.href='/'" />
-    <button onclick="window.location.href='/'">Upload New Reports</button>
-  </nav>
+  <div class="page-wrapper">
+    <!-- Navbar -->
+    <nav>
+      <img src="./images/logo.png" alt="Analyse My IVF Reports" onclick="window.location.href='/'" />
+      <button onclick="window.location.href='/'">Upload New Reports</button>
+    </nav>
 
-  <!-- Header -->
-  <div class="page-header">
-    <h1>📊 Your IVF Report Insights</h1>
-    <p>AI-driven fertility insights designed to help you understand your reports before your next consultation.</p>
-  </div>
+    <!-- Header -->
+    <div class="page-header">
+      <h1>Your IVF Report Insights</h1>
+      <p>AI-driven fertility insights to help you understand your reports before your next consultation.</p>
+    </div>
 
-  <!-- Status -->
-  <div class="status-banner">
-    <span class="icon">✅</span>
-    <span class="text">Analysis complete — 3 reports processed successfully</span>
-  </div>
+    <!-- Main content area -->
+    <div class="main-container">
 
-  <!-- Cards -->
-  <div class="container">
-    <div class="card">
-      <div class="card-header">
-        <span class="icon">📋</span><h2>Summary</h2>
+      <!-- Status Banner (shown when data exists) -->
+      <div id="statusBanner" class="status-banner hide">
+        ✓ Analysis complete — 2 documents processed successfully
       </div>
-      <p>Your reports show a balanced ovarian response and well-timed hormonal patterns with mild variations that can be optimized for better outcomes.</p>
-    </div>
 
-    <div class="card">
-      <div class="card-header"><span class="icon">🔍</span><h2>Key Findings</h2></div>
-      <ul class="list findings">
-        <li>AMH: 3.2 ng/mL — healthy ovarian reserve</li>
-        <li>FSH/LH ratio normal — supports ovulation stability</li>
-        <li>Endometrial thickness: 8.5 mm — adequate for implantation</li>
-      </ul>
-    </div>
+      <!-- Empty State Banner (shown when no data) -->
+      <div id="emptyBanner" class="status-banner empty">
+        ⚠️ No Analysis Found — Please upload reports first.
+      </div>
 
-    <div class="card">
-      <div class="card-header"><span class="icon">⚠️</span><h2>Points Requiring Attention</h2></div>
-      <ul class="list warnings">
-        <li>Slightly elevated prolactin — may affect hormonal rhythm</li>
-        <li>Endometrial lining below optimal range in one phase</li>
-      </ul>
-    </div>
+      <!-- Empty State Content -->
+      <div id="emptyState" class="empty-state">
+        <div class="empty-state-icon">📊</div>
+        <h2>No Reports Analyzed Yet</h2>
+        <p>
+          Upload your IVF reports to receive personalized AI-driven insights that can help you better understand 
+          your fertility journey and prepare for your next consultation with confidence.
+        </p>
+        <button onclick="window.location.href='/'">Upload Your First Report</button>
+      </div>
 
-    <div class="card">
-      <div class="card-header"><span class="icon">📊</span><h2>IVF Readiness Metrics</h2></div>
-      <div class="metrics">
-        <div class="metric"><div class="metric-value">90%</div><div class="metric-label">Endometrial Receptivity</div></div>
-        <div class="metric"><div class="metric-value">85%</div><div class="metric-label">Ovarian Response</div></div>
-        <div class="metric"><div class="metric-value">78%</div><div class="metric-label">Hormonal Sync</div></div>
+      <!-- Cards (populated by JavaScript) -->
+      <div id="insightsContent" class="container hide"></div>
+
+      <!-- Disclaimer (shown when data exists) -->
+      <div id="disclaimer" class="disclaimer hide">
+        <div class="disclaimer-header">
+          <span class="icon">⚕️</span>
+          <h3>Medical Disclaimer</h3>
+        </div>
+        <p>
+          This analysis is generated by AI for educational purposes only and should not replace professional medical advice.
+          Always consult with your fertility specialist before making any medical decisions.
+          The insights provided are based on general medical guidelines and the information extracted from your reports.
+        </p>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header"><span class="icon">✅</span><h2>Recommended Next Steps</h2></div>
-      <ul class="list steps">
-        <li>Repeat hormone profile after 6 weeks</li>
-        <li>Consult fertility specialist regarding prolactin management</li>
-        <li>Schedule follicular monitoring for upcoming cycle</li>
-      </ul>
+    <!-- CTA (shown when data exists) -->
+    <div id="ctaSection" class="cta hide">
+      <button onclick="window.location.href='/'">Analyze Another Report</button>
     </div>
-
-    <div class="card">
-      <div class="card-header"><span class="icon">❓</span><h2>Questions for Your Doctor</h2></div>
-      <ul class="list questions">
-        <li>Should medication be considered to regulate prolactin?</li>
-        <li>Is my current endometrial pattern ideal for implantation?</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- CTA -->
-  <div class="cta">
-    <button onclick="window.location.href='/'">🔁 Analyze Another Report</button>
   </div>
 
   <!-- Footer -->
-  <footer>
-    © 2025 Analyse My IVF Reports — For educational purposes only.  
-    Please consult your fertility specialist for medical advice.
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <span>|</span>
+        <a href="#">Terms & Conditions</a>
+        <span>|</span>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-copy">
+        <p>© 2025 Analyse My IVF Reports — All Rights Reserved.</p>
+      </div>
+    </div>
   </footer>
+  <script src="./insights.js"></script>
 </body>
 </html>

@@ -1,44 +1,25 @@
 // utils/prompt.js
-
 export function buildPrompt(joinedTexts) {
-  return `You are an expert medical report analyzer specializing in fertility and IVF reports. Your task is to analyze the provided medical documents and create a comprehensive, easy-to-understand summary.
+  return `You are an expert medical report analyzer specializing in fertility and IVF reports.
+Your task is to analyze the provided medical documents and create a comprehensive, easy-to-understand summary.
 
-IMPORTANT: You must respond with ONLY a valid JSON object. Do not include any explanatory text before or after the JSON.
+IMPORTANT: Respond with ONLY a valid JSON object. Do NOT include any text before or after the JSON.
 
-The JSON must follow this exact structure:
+JSON structure:
 {
-  "summary": "A clear 3-4 sentence summary of the overall findings in simple language that a patient can understand",
-  "key_findings": [
-    "First important finding with specific values if available",
-    "Second important finding",
-    "Third important finding"
-  ],
-  "possible_red_flags": [
-    "Any concerning values or findings that may need attention",
-    "Any abnormal results that should be discussed with doctor"
-  ],
-  "recommended_followups": [
-    "Specific tests or examinations that may be needed",
-    "Timeline recommendations for next steps"
-  ],
-  "questions_for_doctor": [
-    "Relevant question the patient should ask their doctor",
-    "Another important question based on the findings"
-  ],
-  "disclaimer": "This analysis is for educational purposes only and should not replace professional medical advice. Please discuss these findings with your fertility specialist."
+  "summary": "3–4 sentence plain-language overview of the findings",
+  "key_findings": ["Finding 1", "Finding 2", "Finding 3"],
+  "possible_red_flags": ["Concerning results if any"],
+  "recommended_followups": ["Next steps or further tests"],
+  "questions_for_doctor": ["Important questions for doctor"],
+  "disclaimer": "This analysis is educational only, not medical advice."
 }
 
-Guidelines:
-- Be specific and include actual values from the reports when available
-- Use simple, non-technical language when possible
-- Explain medical terms briefly when used
-- Be objective and factual, avoid causing unnecessary alarm
-- If red flags are present, state them clearly but neutrally
-- If no concerning findings, the possible_red_flags array can be empty
+Be specific, factual, and neutral. Use real values when available.
+Avoid speculation. Use simple English.
 
-Here are the extracted medical report contents:
-
+Here are the extracted IVF report contents:
 ${joinedTexts}
 
-Now provide your analysis as a JSON object:`;
+Now provide your JSON response:`;
 }

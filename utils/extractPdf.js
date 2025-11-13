@@ -3,14 +3,9 @@ import fs from "fs";
 
 export async function extractPdfText(filePath) {
   try {
-    // Dynamically import the CommonJS module
     const { default: pdfParse } = await import("pdf-parse");
-
     const dataBuffer = fs.readFileSync(filePath);
-    const data = await pdfParse(dataBuffer, {
-      max: 0, // Parse all pages
-    });
-
+    const data = await pdfParse(dataBuffer);
     const text = (data.text || "")
       .replace(/\r/g, "\n")
       .replace(/[ \t]+\n/g, "\n")
@@ -18,7 +13,7 @@ export async function extractPdfText(filePath) {
       .trim();
 
     if (!text || text.length < 10) {
-      throw new Error("PDF appears to be empty or contains no readable text");
+      throw new Error("PDF appears empty or unreadable");
     }
 
     return text;

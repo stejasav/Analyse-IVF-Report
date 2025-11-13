@@ -4,7 +4,6 @@ import sharp from "sharp";
 
 export async function ocrImage(filePath) {
   try {
-    // Preprocess image for better OCR
     const preprocessed = await sharp(filePath)
       .grayscale()
       .normalize()

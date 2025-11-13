@@ -1,17 +1,15 @@
-// insights.js
 document.addEventListener("DOMContentLoaded", () => {
-  const data = JSON.parse(sessionStorage.getItem("analysisResults") || "{}");
+  const stored = sessionStorage.getItem("analysisResults");
+  if (!stored) {
+    document.getElementById("statusBanner").textContent =
+      "⚠️ No Analysis Found — Please upload reports first.";
+    return;
+  }
 
-  if (!data || !data.ok) {
-    document.getElementById("insightsContent").innerHTML = `
-      <div class="insights-card">
-        <h2>⚠️ No Analysis Data Found</h2>
-        <p class="empty-state">Please upload and analyze your reports first.</p>
-        <div style="text-align: center; margin-top: 20px;">
-          <button class="btn-action btn-primary" onclick="window.location.href='/'">Go Back to Upload</button>
-        </div>
-      </div>
-    `;
+  const data = JSON.parse(stored);
+  if (!data.ok || !data.data) {
+    document.getElementById("statusBanner").textContent =
+      "⚠️ Invalid data received from AI. Please re-analyze.";
     return;
   }
 
@@ -19,126 +17,150 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function renderInsights(data) {
+  const banner = document.getElementById("statusBanner");
   const container = document.getElementById("insightsContent");
-  const analysis = data.data;
+  const disclaimerBox = document.getElementById("disclaimer");
+  const d = data.data;
 
-  let html = "";
+  // Status banner
+  banner.innerHTML = `✅ Analysis complete — ${
+    data.processed_files?.length || 1
+  } report${
+    data.processed_files?.length > 1 ? "s" : ""
+  } processed successfully`;
 
-  // Processed Files
-  if (data.processed_files && data.processed_files.length > 0) {
-    html += `
-      <div class="processed-files">
-        <h3>✅ Analyzed Files</h3>
-        ${data.processed_files
-          .map((file) => `<span class="file-tag">${file}</span>`)
-          .join("")}
-      </div>
-    `;
-  }
+  container.innerHTML = "";
+
+  // Helper
+  const makeCard = (title, innerHTML) => `
+    <div class="card">
+      <div class="card-header"><h2>${title}</h2></div>
+      ${innerHTML}
+    </div>
+  `;
 
   // Summary
-  if (analysis.summary) {
-    html += `
-      <div class="insights-card summary">
-        <h2>📋 Summary</h2>
-        <p>${escapeHtml(analysis.summary)}</p>
-      </div>
-    `;
-  }
+  if (d.summary)
+    container.innerHTML += makeCard(
+      "Summary",
+      `<p>${escapeHtml(d.summary)}</p>`
+    );
 
   // Key Findings
-  if (analysis.key_findings && analysis.key_findings.length > 0) {
-    html += `
-      <div class="insights-card">
-        <h2>🔍 Key Findings</h2>
-        <ul class="insights-list">
-          ${analysis.key_findings
-            .map((item) => `<li>${escapeHtml(item)}</li>`)
-            .join("")}
-        </ul>
-      </div>
-    `;
-  }
+  if (Array.isArray(d.key_findings) && d.key_findings.length)
+    container.innerHTML += makeCard(
+      "Key Findings",
+      `<ul class="list findings">${d.key_findings
+        .map((f) => `<li>${escapeHtml(f)}</li>`)
+        .join("")}</ul>`
+    );
 
-  // Red Flags
-  if (analysis.possible_red_flags && analysis.possible_red_flags.length > 0) {
-    html += `
-      <div class="insights-card">
-        <h2>⚠️ Points Requiring Attention</h2>
-        <ul class="insights-list">
-          ${analysis.possible_red_flags
-            .map((item) => `<li class="red-flag-item">${escapeHtml(item)}</li>`)
-            .join("")}
-        </ul>
-      </div>
-    `;
-  }
+  // Points Requiring Attention
+  if (Array.isArray(d.possible_red_flags) && d.possible_red_flags.length)
+    container.innerHTML += makeCard(
+      "Points Requiring Attention",
+      `<ul class="list warnings">${d.possible_red_flags
+        .map((f) => `<li>${escapeHtml(f)}</li>`)
+        .join("")}</ul>`
+    );
 
   // Recommended Follow-ups
-  if (
-    analysis.recommended_followups &&
-    analysis.recommended_followups.length > 0
-  ) {
-    html += `
-      <div class="insights-card">
-        <h2>✅ Recommended Next Steps</h2>
-        <ul class="insights-list">
-          ${analysis.recommended_followups
-            .map((item) => `<li class="followup-item">${escapeHtml(item)}</li>`)
-            .join("")}
-        </ul>
-      </div>
-    `;
-  }
+  if (Array.isArray(d.recommended_followups) && d.recommended_followups.length)
+    container.innerHTML += makeCard(
+      "Recommended Next Steps",
+      `<ul class="list steps">${d.recommended_followups
+        .map((f) => `<li>${escapeHtml(f)}</li>`)
+        .join("")}</ul>`
+    );
 
   // Questions for Doctor
-  if (
-    analysis.questions_for_doctor &&
-    analysis.questions_for_doctor.length > 0
-  ) {
-    html += `
-      <div class="insights-card">
-        <h2>❓ Questions for Your Doctor</h2>
-        <ul class="insights-list">
-          ${analysis.questions_for_doctor
-            .map((item) => `<li>${escapeHtml(item)}</li>`)
-            .join("")}
-        </ul>
-      </div>
-    `;
-  }
+  if (Array.isArray(d.questions_for_doctor) && d.questions_for_doctor.length)
+    container.innerHTML += makeCard(
+      "Questions for Your Doctor",
+      `<ul class="list questions">${d.questions_for_doctor
+        .map((f) => `<li>${escapeHtml(f)}</li>`)
+        .join("")}</ul>`
+    );
 
-  // Raw Response (if available)
-  if (analysis.raw_response) {
-    html += `
-      <div class="insights-card">
-        <h2>📄 Full AI Response</h2>
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;">
-          <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${escapeHtml(
-            analysis.raw_response
-          )}</pre>
-        </div>
-      </div>
-    `;
-  }
+  // Additional unexpected fields
+  const known = [
+    "summary",
+    "key_findings",
+    "possible_red_flags",
+    "recommended_followups",
+    "questions_for_doctor",
+    "disclaimer",
+    "raw_response",
+  ];
+  Object.keys(d)
+    .filter((k) => !known.includes(k))
+    .forEach((key) => {
+      const val = d[key];
+      if (typeof val === "string" && val.trim()) {
+        container.innerHTML += makeCard(
+          formatKey(key),
+          `<p>${escapeHtml(val)}</p>`
+        );
+      } else if (Array.isArray(val) && val.length) {
+        container.innerHTML += makeCard(
+          formatKey(key),
+          `<ul class="list">${val
+            .map((v) => `<li>${escapeHtml(v)}</li>`)
+            .join("")}</ul>`
+        );
+      }
+    });
 
   // Disclaimer
-  if (analysis.disclaimer) {
-    html += `
-      <div class="insights-card">
-        <h2>⚖️ Important Notice</h2>
-        <div class="disclaimer-box">
-          <p>${escapeHtml(analysis.disclaimer)}</p>
-        </div>
-      </div>
-    `;
+  if (d.disclaimer) {
+    disclaimerBox.style.display = "block";
+    disclaimerBox.innerHTML = `<h3>⚕️ Medical Disclaimer</h3><p>${escapeHtml(
+      d.disclaimer
+    )}</p>`;
   }
-
-  container.innerHTML = html;
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  setTimeout(() => {
+    const insightsContent = document.getElementById("insightsContent");
+    const hasContent = insightsContent && insightsContent.children.length > 0;
+
+    const statusBanner = document.getElementById("statusBanner");
+    const emptyBanner = document.getElementById("emptyBanner");
+    const emptyState = document.getElementById("emptyState");
+    const disclaimer = document.getElementById("disclaimer");
+    const ctaSection = document.getElementById("ctaSection");
+
+    if (hasContent) {
+      // Show insights UI
+      statusBanner.classList.remove("hide");
+      insightsContent.classList.remove("hide");
+      disclaimer.classList.remove("hide");
+      ctaSection.classList.remove("hide");
+
+      // Hide empty state
+      emptyBanner.classList.add("hide");
+      emptyState.classList.add("hide");
+    } else {
+      // Show empty UI
+      emptyBanner.classList.remove("hide");
+      emptyState.classList.remove("hide");
+
+      // Hide insights parts
+      statusBanner.classList.add("hide");
+      insightsContent.classList.add("hide");
+      disclaimer.classList.add("hide");
+      ctaSection.classList.add("hide");
+    }
+  }, 100);
+});
 
 function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = text;
   return div.innerHTML;
+}
+
+function formatKey(key) {
+  return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
