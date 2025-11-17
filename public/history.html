@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Your Past IVF Report Insights — History</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --accent: #1F232D;
+      --accent-hover: #2AD497;
+      --text: #1F232D;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --card-bg: #ffffff;
+      --footer-bg: #41444B;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: #f8fafc;
+      color: var(--text);
+    }
+
+    nav {
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav img {
+      height: 50px;
+      cursor: pointer;
+    }
+
+    nav button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 22px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+
+    nav button:hover {
+      background: var(--accent-hover);
+      color: var(--accent);
+    }
+
+    .page-header {
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .grid {
+      max-width: 1200px;
+      margin: 40px auto 80px;
+      padding: 0 6%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0 0 10px;
+    }
+
+    .card p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin: 4px 0;
+    }
+
+    .no-history {
+      text-align: center;
+      padding: 80px 20px;
+      font-size: 1.1rem;
+      color: var(--muted);
+    }
+
+  </style>
+</head>
+<body>
+
+  <nav>
+    <img src="./images/logo.png" onclick="window.location.href='/'">
+    <button onclick="window.location.href='/insights.html'">
+      Back to Insights
+    </button>
+  </nav>
+
+  <div class="page-header">
+    <h1>Your Report History</h1>
+    <p>View all past IVF analysis sessions</p>
+  </div>
+
+  <div id="historyContainer" class="grid"></div>
+
+  <div id="emptyState" class="no-history" style="display:none;">
+    No past analyses found. Upload a report to get started!
+  </div>
+
+  <script src="./device.js"></script>
+  <script src="./history.js"></script>
+
+</body>
+</html>

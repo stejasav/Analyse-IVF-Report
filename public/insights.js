@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function renderInsights(data) {
   const banner = document.getElementById("statusBanner");
   const container = document.getElementById("insightsContent");
-  const disclaimerBox = document.getElementById("disclaimer");
+  // const disclaimerBox = document.getElementById("disclaimer");
   const d = data.data;
 
   // Status banner
@@ -112,12 +112,12 @@ function renderInsights(data) {
     });
 
   // Disclaimer
-  if (d.disclaimer) {
-    disclaimerBox.style.display = "block";
-    disclaimerBox.innerHTML = `<h3>⚕️ Medical Disclaimer</h3><p>${escapeHtml(
-      d.disclaimer
-    )}</p>`;
-  }
+  // if (d.disclaimer) {
+  //   disclaimerBox.style.display = "block";
+  //   disclaimerBox.innerHTML = `<h3>⚕️ Medical Disclaimer</h3><p>${escapeHtml(
+  //     d.disclaimer
+  //   )}</p>`;
+  // }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -164,3 +164,14 @@ function escapeHtml(text) {
 function formatKey(key) {
   return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
+
+
+// ---- History bubble handler ----
+document.addEventListener("DOMContentLoaded", () => {
+  const bubble = document.getElementById("historyBubble");
+  if (bubble) {
+    bubble.addEventListener("click", () => {
+      window.location.href = "/history.html";
+    });
+  }
+});

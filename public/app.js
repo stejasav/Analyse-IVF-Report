@@ -95,6 +95,9 @@ submitFiles.addEventListener("click", async () => {
     const res = await fetch(`${window.location.origin}/api/analyze`, {
       method: "POST",
       body: fd,
+      headers: {
+        "X-Device-Id": window.__DEVICE_ID__,
+      },
     });
 
     const data = await res.json();
