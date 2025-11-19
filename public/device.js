@@ -14,7 +14,7 @@ if (!deviceId) {
   localStorage.setItem("device_id", deviceId);
   console.log("🆕 Generated new device_id:", deviceId);
 } else {
-  console.log("🔑 Existing device_id:", deviceId);
+  // console.log("🔑 Existing device_id:", deviceId);
 }
 
 window.__DEVICE_ID__ = deviceId;
