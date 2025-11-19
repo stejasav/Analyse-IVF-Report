@@ -9,7 +9,6 @@ const loading = document.getElementById("loading");
 
 let files = [];
 
-// ---------- Modal Controls ----------
 function openModal() {
   modal.classList.remove("hidden");
 }
@@ -66,7 +65,6 @@ function renderFileList() {
     fileList.appendChild(row);
   });
 
-  // remove handlers
   fileList.querySelectorAll("[data-remove]").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const i = Number(e.target.getAttribute("data-remove"));
@@ -76,7 +74,6 @@ function renderFileList() {
   });
 }
 
-// ---------- Submit & Analyze ----------
 submitFiles.addEventListener("click", async () => {
   if (!files.length) {
     alert("Please add at least one file.");
@@ -106,21 +103,28 @@ submitFiles.addEventListener("click", async () => {
     submitFiles.textContent = "Analyze Reports";
 
     if (!res.ok || !data.ok) {
-      console.error("❌ Server error:", data);
+      console.error("Server error:", data);
       alert(data?.error || "Something went wrong. Please try again.");
       return;
     }
 
-    console.log("✅ Gemini AI response:", data);
+    console.log("Gemini AI response:", data);
 
-    // ✅ Save results and redirect to insights
-    sessionStorage.setItem("analysisResults", JSON.stringify(data));
+    console.log("Full /api/analyze response:", data);
+    sessionStorage.setItem(
+      "analysisResults",
+      JSON.stringify({
+        ok: data.ok,
+        processed_files: data.processed_files,
+        data: data.data,
+      })
+    );
     window.location.href = "/insights.html";
   } catch (err) {
     hideLoading();
     submitFiles.disabled = false;
     submitFiles.textContent = "Analyze Reports";
-    console.error("❌ Analysis error:", err);
+    console.error("Analysis error:", err);
     alert("Failed to analyze files. Please try again.");
   }
 });

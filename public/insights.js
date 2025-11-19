@@ -1,18 +1,34 @@
+let ANALYSIS_FILES = [];
+
 document.addEventListener("DOMContentLoaded", () => {
   const stored = sessionStorage.getItem("analysisResults");
+  const statusBanner = document.getElementById("statusBanner");
+
   if (!stored) {
-    document.getElementById("statusBanner").textContent =
-      "⚠️ No Analysis Found — Please upload reports first.";
+    document.getElementById("emptyBanner").classList.remove("hide");
+    document.getElementById("emptyState").classList.remove("hide");
+
+    document.getElementById("statusBanner").classList.add("hide");
+    document.getElementById("insightsContent").classList.add("hide");
+    document.getElementById("disclaimer").classList.add("hide");
+    document.getElementById("ctaSection").classList.add("hide");
+    document.getElementById("filesSection").classList.add("hide");
+
     return;
   }
 
   const data = JSON.parse(stored);
   if (!data.ok || !data.data) {
-    document.getElementById("statusBanner").textContent =
+    statusBanner.textContent =
       "⚠️ Invalid data received from AI. Please re-analyze.";
     return;
   }
 
+  ANALYSIS_FILES = Array.isArray(data.processed_files)
+    ? data.processed_files
+    : [];
+
+  renderFiles(ANALYSIS_FILES);
   renderInsights(data);
 });
 
@@ -120,39 +136,114 @@ function renderInsights(data) {
   // }
 }
 
+function renderFiles(files) {
+  const section = document.getElementById("filesSection");
+  const list = document.getElementById("filesList");
+
+  if (!section || !list) return;
+  if (!files || !files.length) {
+    section.classList.add("hide");
+    return;
+  }
+
+  section.classList.remove("hide");
+  list.innerHTML = "";
+
+  files.forEach((file, idx) => {
+    const card = document.createElement("div");
+    card.className = "file-card";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "file-name";
+    nameEl.textContent = `📄 ${file.name || "Report " + (idx + 1)}`;
+
+    const actions = document.createElement("div");
+    actions.className = "file-actions";
+
+    // View File button
+    const viewFileBtn = document.createElement("button");
+    viewFileBtn.className = "file-btn";
+    viewFileBtn.textContent = "View File";
+    viewFileBtn.addEventListener("click", () => {
+      if (file.url) {
+        window.open(file.url, "_blank");
+      } else {
+        alert("File preview not available.");
+      }
+    });
+
+    // View Transcript button
+    const viewTranscriptBtn = document.createElement("button");
+    viewTranscriptBtn.className = "file-btn secondary-btn";
+    viewTranscriptBtn.textContent = "View Transcript";
+    viewTranscriptBtn.addEventListener("click", () => {
+      openTranscriptModal(file);
+    });
+
+    actions.appendChild(viewFileBtn);
+    actions.appendChild(viewTranscriptBtn);
+
+    card.appendChild(nameEl);
+    card.appendChild(actions);
+
+    list.appendChild(card);
+  });
+}
+
+function openTranscriptModal(file) {
+  const modal = document.getElementById("transcriptModal");
+  const fileNameEl = document.getElementById("modalFileName");
+  const transcriptEl = document.getElementById("modalTranscript");
+
+  if (!modal || !fileNameEl || !transcriptEl) return;
+
+  fileNameEl.textContent = file.name || "Report Transcript";
+  transcriptEl.textContent =
+    file.transcript && file.transcript.trim().length
+      ? file.transcript
+      : "No transcription available for this file.";
+
+  modal.classList.remove("hide");
+}
+
+
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     const insightsContent = document.getElementById("insightsContent");
-    const hasContent = insightsContent && insightsContent.children.length > 0;
+    const hasContent =
+      insightsContent && insightsContent.innerHTML.trim().length > 0;
 
     const statusBanner = document.getElementById("statusBanner");
     const emptyBanner = document.getElementById("emptyBanner");
     const emptyState = document.getElementById("emptyState");
     const disclaimer = document.getElementById("disclaimer");
     const ctaSection = document.getElementById("ctaSection");
+    const filesSection = document.getElementById("filesSection");
 
     if (hasContent) {
-      // Show insights UI
+      // SHOW insights UI
       statusBanner.classList.remove("hide");
       insightsContent.classList.remove("hide");
       disclaimer.classList.remove("hide");
       ctaSection.classList.remove("hide");
+      filesSection.classList.remove("hide");
 
-      // Hide empty state
+      // HIDE empty UI
       emptyBanner.classList.add("hide");
       emptyState.classList.add("hide");
     } else {
-      // Show empty UI
+      // Show EMPTY state
       emptyBanner.classList.remove("hide");
       emptyState.classList.remove("hide");
 
-      // Hide insights parts
+      // Hide insights UI
       statusBanner.classList.add("hide");
       insightsContent.classList.add("hide");
       disclaimer.classList.add("hide");
       ctaSection.classList.add("hide");
+      filesSection.classList.add("hide");
     }
-  }, 100);
+  }, 120);
 });
 
 function escapeHtml(text) {
@@ -165,8 +256,7 @@ function formatKey(key) {
   return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-
-// ---- History bubble handler ----
+// ---- History bubble + transcript modal handler ----
 document.addEventListener("DOMContentLoaded", () => {
   const bubble = document.getElementById("historyBubble");
   if (bubble) {
@@ -174,4 +264,20 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = "/history.html";
     });
   }
+
+  const transcriptModal = document.getElementById("transcriptModal");
+  const closeTranscript = document.getElementById("closeTranscript");
+
+  if (transcriptModal && closeTranscript) {
+    closeTranscript.addEventListener("click", () => {
+      transcriptModal.classList.add("hide");
+    });
+
+    transcriptModal.addEventListener("click", (e) => {
+      if (e.target === transcriptModal) {
+        transcriptModal.classList.add("hide");
+      }
+    });
+  }
 });
+

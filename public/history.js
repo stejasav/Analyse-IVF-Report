@@ -39,9 +39,8 @@
       <p><strong>Date:</strong> ${created}</p>
     `;
 
-    // clicking card opens insights with stored data
     card.addEventListener("click", async () => {
-      console.log("🟩 Opening analysis:", item.id);
+      console.log("Opening analysis:", item.id);
 
       const res2 = await fetch(`/api/history/${item.id}`, {
         headers: { "x-device-id": deviceId },
@@ -54,7 +53,6 @@
         return;
       }
 
-      // store in sessionStorage so insights.js can read it
       sessionStorage.setItem(
         "analysisResults",
         JSON.stringify({

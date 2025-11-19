@@ -14,16 +14,13 @@ import db from "./db/database.js";
 
 dotenv.config();
 
-// ---------- Setup ----------
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
-// Middleware: only enforce device ID on /api/* routes
 app.use((req, res, next) => {
-  // Only check for API routes
   if (req.path.startsWith("/api/")) {
     const deviceId = req.headers["x-device-id"];
 
@@ -39,14 +36,13 @@ app.use((req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(express.static(path.join(__dirname, "public")));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 const PORT = process.env.PORT || 3000;
 const GEMINI_MODEL = process.env.GEMINI_MODEL;
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
 const MAX_FILE_MB = Number(process.env.MAX_FILE_MB || 15);
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${GEMINI_MODEL}:generateContent?key=${GOOGLE_API_KEY}`;
 
-// ---------- Multer setup ----------
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = path.join(__dirname, "uploads");
@@ -81,11 +77,11 @@ app.get("/api/health", async (req, res) => {
     );
 
     const reply =
-      response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "pong";
-    console.log("✅ Gemini responded:", reply);
+      response.data?.candidates?.[0]?.content?.parts?.[0]?.text || "Working";
+    console.log("Gemini responded:", reply);
     res.json({ ok: true, model: GEMINI_MODEL, response: reply.trim() });
   } catch (e) {
-    console.error("❌ Health check failed:", e.response?.data || e.message);
+    console.error("Health check failed:", e.response?.data || e.message);
     res.status(500).json({
       ok: false,
       error:
@@ -98,14 +94,12 @@ app.get("/api/health", async (req, res) => {
 // ---------- Analyze Route ----------
 app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
   const files = req.files || [];
-    if (!req.deviceId) {
-      return res.status(400).json({
-        ok: false,
-        error: "Missing device ID",
-      });
-    }
+  if (!req.deviceId) {
+    console.warn("⚠️ Missing device ID for /api/analyze");
+  }
   console.log(`📂 Received ${files.length} file(s) for analysis`);
   console.log("🔗 From device:", req.deviceId);
+  sessionStorage.setItem("analysisResults", JSON.stringify(data));
 
   if (!files.length)
     return res.status(400).json({ ok: false, error: "No files uploaded" });
@@ -128,9 +122,19 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
             ? await extractPdfText(filePath)
             : await ocrImage(filePath);
 
-        if (text?.trim()) {
-          allTexts.push(`### FILE: ${f.originalname}\n${text.trim()}`);
-          processedFiles.push(f.originalname);
+        const cleaned = text?.trim() || "";
+
+        if (cleaned) {
+          // Store text for AI prompt
+          allTexts.push(`### FILE: ${f.originalname}\n${cleaned}`);
+
+          // Store per-file info for frontend
+          processedFiles.push({
+            name: f.originalname,
+            url: `/uploads/${f.filename}`,
+            transcript: cleaned,
+          });
+
           console.log(`✅ Extracted text from: ${f.originalname}`);
         } else {
           console.warn(`⚠️ No readable text in: ${f.originalname}`);
@@ -139,11 +143,6 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
         console.error(
           `❌ Extraction failed for ${f.originalname}: ${err.message}`
         );
-      } finally {
-        // Always cleanup individual file
-        try {
-          fs.unlinkSync(filePath);
-        } catch {}
       }
     }
 
@@ -204,7 +203,7 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
       now
     );
 
-    console.log("💾 Saved analysis to DB");
+    console.log("Saved analysis to DB");
 
     res.json({
       ok: true,
@@ -213,7 +212,7 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
       data,
     });
   } catch (err) {
-    console.error("❌ ANALYSIS ERROR:", err.message);
+    console.error("ANALYSIS ERROR:", err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });
@@ -267,8 +266,6 @@ app.get("/api/history/:id", (req, res) => {
   });
 });
 
-
-// ---------- Start Server ----------
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🤖 Gemini model: ${GEMINI_MODEL}`);
