@@ -1,8 +1,14 @@
 let ANALYSIS_FILES = [];
+window.__ANALYSIS_DATA__ = JSON.parse(
+  sessionStorage.getItem("analysisResults")
+);
 
 document.addEventListener("DOMContentLoaded", () => {
   const stored = sessionStorage.getItem("analysisResults");
   const statusBanner = document.getElementById("statusBanner");
+
+  console.group("📦 Loaded analysis from sessionStorage");
+  console.log(JSON.parse(stored));
 
   if (!stored) {
     document.getElementById("emptyBanner").classList.remove("hide");
@@ -24,9 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  ANALYSIS_FILES = Array.isArray(data.processed_files)
-    ? data.processed_files
-    : [];
+  ANALYSIS_FILES = Array.isArray(data.processed_files) ? data.processed_files : [];
 
   renderFiles(ANALYSIS_FILES);
   renderInsights(data);
@@ -35,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
 function renderInsights(data) {
   const banner = document.getElementById("statusBanner");
   const container = document.getElementById("insightsContent");
-  // const disclaimerBox = document.getElementById("disclaimer");
   const d = data.data;
 
   // Status banner
@@ -105,7 +108,6 @@ function renderInsights(data) {
     "possible_red_flags",
     "recommended_followups",
     "questions_for_doctor",
-    "disclaimer",
     "raw_response",
   ];
   Object.keys(d)
@@ -126,14 +128,6 @@ function renderInsights(data) {
         );
       }
     });
-
-  // Disclaimer
-  // if (d.disclaimer) {
-  //   disclaimerBox.style.display = "block";
-  //   disclaimerBox.innerHTML = `<h3>⚕️ Medical Disclaimer</h3><p>${escapeHtml(
-  //     d.disclaimer
-  //   )}</p>`;
-  // }
 }
 
 function renderFiles(files) {
@@ -197,11 +191,16 @@ function openTranscriptModal(file) {
 
   if (!modal || !fileNameEl || !transcriptEl) return;
 
-  fileNameEl.textContent = file.name || "Report Transcript";
-  transcriptEl.textContent =
-    file.transcript && file.transcript.trim().length
-      ? file.transcript
+  fileNameEl.textContent = file.name.name || "Report Transcript";
+
+  let transcript = file.transcript;
+
+  // ensure formatting is preserved
+  transcriptEl.innerHTML =
+    transcript && transcript.trim().length
+      ? escapeHtml(transcript).replace(/\n/g, "<br>")
       : "No transcription available for this file.";
+
 
   modal.classList.remove("hide");
 }

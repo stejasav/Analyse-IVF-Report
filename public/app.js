@@ -98,6 +98,8 @@ submitFiles.addEventListener("click", async () => {
     });
 
     const data = await res.json();
+    console.log("✅ Gemini AI response:", data);
+
     hideLoading();
     submitFiles.disabled = false;
     submitFiles.textContent = "Analyze Reports";
@@ -108,9 +110,6 @@ submitFiles.addEventListener("click", async () => {
       return;
     }
 
-    console.log("Gemini AI response:", data);
-
-    console.log("Full /api/analyze response:", data);
     sessionStorage.setItem(
       "analysisResults",
       JSON.stringify({

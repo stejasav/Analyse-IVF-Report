@@ -6,8 +6,6 @@
     return;
   }
 
-  console.log("🟦 Fetching history for device:", deviceId);
-
   const res = await fetch("/api/history", {
     headers: {
       "x-device-id": deviceId,
@@ -35,7 +33,13 @@
 
     card.innerHTML = `
       <h3>Analysis #${item.id}</h3>
-      <p><strong>Files:</strong> ${item.files.join(", ")}</p>
+      <p><strong>Files:</strong> ${
+        Array.isArray(item.files)
+          ? item.files
+              .map((f) => (typeof f === "string" ? f : f.name))
+              .join(" , ")
+          : ""
+      }</p>
       <p><strong>Date:</strong> ${created}</p>
     `;
 
@@ -53,11 +57,22 @@
         return;
       }
 
+      const processedMerged = full.files.map((f, index) => ({
+        name: typeof f === "string" ? f : f.name,
+        url: typeof f === "string" ? `/uploads/${f}` : f.url,
+        transcript:
+          typeof f === "object" && f.transcript
+            ? f.transcript
+            : Array.isArray(full.transcripts)
+            ? full.transcripts[index] || "No transcript found."
+            : "No transcript found.",
+      }));
+
       sessionStorage.setItem(
         "analysisResults",
         JSON.stringify({
           ok: true,
-          processed_files: full.files,
+          processed_files: processedMerged,
           data: full.data,
         })
       );

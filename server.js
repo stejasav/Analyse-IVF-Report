@@ -27,7 +27,7 @@ app.use((req, res, next) => {
     if (!deviceId) {
       console.warn("⚠️ Missing device ID for API route:", req.path);
     } else {
-      console.log("📱 Device ID:", deviceId);
+      // console.log("📱 Device ID:", deviceId);
     }
 
     req.deviceId = deviceId;
@@ -45,9 +45,9 @@ const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${GE
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = path.join(__dirname, "uploads");
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
+    const uploadDir = path.join(__dirname, "public/uploads");
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     const safe = file.originalname.replace(/[^\w.\-() ]+/g, "_");
@@ -99,7 +99,7 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
   }
   console.log(`📂 Received ${files.length} file(s) for analysis`);
   console.log("🔗 From device:", req.deviceId);
-  sessionStorage.setItem("analysisResults", JSON.stringify(data));
+  // sessionStorage.setItem("analysisResults", JSON.stringify(data));
 
   if (!files.length)
     return res.status(400).json({ ok: false, error: "No files uploaded" });
@@ -128,11 +128,10 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
           // Store text for AI prompt
           allTexts.push(`### FILE: ${f.originalname}\n${cleaned}`);
 
-          // Store per-file info for frontend
           processedFiles.push({
             name: f.originalname,
             url: `/uploads/${f.filename}`,
-            transcript: cleaned,
+            transcript: cleaned || "",
           });
 
           console.log(`✅ Extracted text from: ${f.originalname}`);
@@ -182,8 +181,6 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
       possible_red_flags: [],
       recommended_followups: [],
       questions_for_doctor: [],
-      disclaimer:
-        "AI-generated analysis for educational purposes only. Always consult your healthcare provider.",
       raw_response: raw,
     };
 
