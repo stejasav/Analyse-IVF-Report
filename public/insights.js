@@ -5,37 +5,62 @@ window.__ANALYSIS_DATA__ = JSON.parse(
 
 document.addEventListener("DOMContentLoaded", () => {
   const stored = sessionStorage.getItem("analysisResults");
-  const statusBanner = document.getElementById("statusBanner");
-
-  console.group("📦 Loaded analysis from sessionStorage");
-  console.log(JSON.parse(stored));
 
   if (!stored) {
-    document.getElementById("emptyBanner").classList.remove("hide");
-    document.getElementById("emptyState").classList.remove("hide");
-
-    document.getElementById("statusBanner").classList.add("hide");
-    document.getElementById("insightsContent").classList.add("hide");
-    document.getElementById("disclaimer").classList.add("hide");
-    document.getElementById("ctaSection").classList.add("hide");
-    document.getElementById("filesSection").classList.add("hide");
-
+    showEmptyState();
     return;
   }
 
   const data = JSON.parse(stored);
   if (!data.ok || !data.data) {
-    statusBanner.textContent =
+    document.getElementById("statusBanner").textContent =
       "⚠️ Invalid data received from AI. Please re-analyze.";
     return;
   }
 
-  ANALYSIS_FILES = Array.isArray(data.processed_files) ? data.processed_files : [];
+  ANALYSIS_FILES = Array.isArray(data.processed_files)
+    ? data.processed_files
+    : [];
 
   renderFiles(ANALYSIS_FILES);
   renderInsights(data);
+
+  setTimeout(toggleUISections, 120);
 });
 
+/* UI SECTION TOGGLING*/
+function showEmptyState() {
+  const idsToShow = ["emptyBanner", "emptyState"];
+  const idsToHide = [
+    "statusBanner",
+    "insightsContent",
+    "disclaimer",
+    "ctaSection",
+    "filesSection"
+  ];
+
+  idsToShow.forEach((id) => document.getElementById(id).classList.remove("hide"));
+  idsToHide.forEach((id) => document.getElementById(id).classList.add("hide"));
+}
+
+function toggleUISections() {
+  const insightsContent = document.getElementById("insightsContent");
+  const hasContent =
+    insightsContent && insightsContent.innerHTML.trim().length > 0;
+
+  const show = (id) => document.getElementById(id).classList.remove("hide");
+  const hide = (id) => document.getElementById(id).classList.add("hide");
+
+  if (hasContent) {
+    ["statusBanner", "insightsContent", "disclaimer", "ctaSection", "filesSection"].forEach(show);
+    ["emptyBanner", "emptyState"].forEach(hide);
+  } else {
+    ["emptyBanner", "emptyState"].forEach(show);
+    ["statusBanner", "insightsContent", "disclaimer", "ctaSection", "filesSection"].forEach(hide);
+  }
+}
+
+// RENDER INSIGHTS
 function renderInsights(data) {
   const banner = document.getElementById("statusBanner");
   const container = document.getElementById("insightsContent");
@@ -130,6 +155,7 @@ function renderInsights(data) {
     });
 }
 
+// RENDER FILE CARDS
 function renderFiles(files) {
   const section = document.getElementById("filesSection");
   const list = document.getElementById("filesList");
@@ -184,65 +210,39 @@ function renderFiles(files) {
   });
 }
 
+// TRANSCRIPT MODAL
 function openTranscriptModal(file) {
   const modal = document.getElementById("transcriptModal");
   const fileNameEl = document.getElementById("modalFileName");
   const transcriptEl = document.getElementById("modalTranscript");
 
-  if (!modal || !fileNameEl || !transcriptEl) return;
+  fileNameEl.textContent = file.name || "Report Transcript";
 
-  fileNameEl.textContent = file.name.name || "Report Transcript";
-
-  let transcript = file.transcript;
-
-  // ensure formatting is preserved
-  transcriptEl.innerHTML =
-    transcript && transcript.trim().length
-      ? escapeHtml(transcript).replace(/\n/g, "<br>")
-      : "No transcription available for this file.";
-
+  const transcript = file.transcript;
+  transcriptEl.innerHTML = transcript
+    ? escapeHtml(transcript).replace(/\n/g, "<br>")
+    : "No transcription available for this file.";
 
   modal.classList.remove("hide");
 }
 
-
+// EVENT HANDLERS — History Bubble & Modal Close
 document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const insightsContent = document.getElementById("insightsContent");
-    const hasContent =
-      insightsContent && insightsContent.innerHTML.trim().length > 0;
+  const bubble = document.getElementById("historyBubble");
+  const modal = document.getElementById("transcriptModal");
+  const close = document.getElementById("closeTranscript");
 
-    const statusBanner = document.getElementById("statusBanner");
-    const emptyBanner = document.getElementById("emptyBanner");
-    const emptyState = document.getElementById("emptyState");
-    const disclaimer = document.getElementById("disclaimer");
-    const ctaSection = document.getElementById("ctaSection");
-    const filesSection = document.getElementById("filesSection");
+  if (bubble)
+    bubble.addEventListener(
+      "click",
+      () => (window.location.href = "/history.html")
+    );
+  if (close) close.addEventListener("click", () => modal.classList.add("hide"));
 
-    if (hasContent) {
-      // SHOW insights UI
-      statusBanner.classList.remove("hide");
-      insightsContent.classList.remove("hide");
-      disclaimer.classList.remove("hide");
-      ctaSection.classList.remove("hide");
-      filesSection.classList.remove("hide");
-
-      // HIDE empty UI
-      emptyBanner.classList.add("hide");
-      emptyState.classList.add("hide");
-    } else {
-      // Show EMPTY state
-      emptyBanner.classList.remove("hide");
-      emptyState.classList.remove("hide");
-
-      // Hide insights UI
-      statusBanner.classList.add("hide");
-      insightsContent.classList.add("hide");
-      disclaimer.classList.add("hide");
-      ctaSection.classList.add("hide");
-      filesSection.classList.add("hide");
-    }
-  }, 120);
+  if (modal)
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.add("hide");
+    });
 });
 
 function escapeHtml(text) {
@@ -255,28 +255,10 @@ function formatKey(key) {
   return key.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// ---- History bubble + transcript modal handler ----
-document.addEventListener("DOMContentLoaded", () => {
-  const bubble = document.getElementById("historyBubble");
-  if (bubble) {
-    bubble.addEventListener("click", () => {
-      window.location.href = "/history.html";
-    });
-  }
-
-  const transcriptModal = document.getElementById("transcriptModal");
-  const closeTranscript = document.getElementById("closeTranscript");
-
-  if (transcriptModal && closeTranscript) {
-    closeTranscript.addEventListener("click", () => {
-      transcriptModal.classList.add("hide");
-    });
-
-    transcriptModal.addEventListener("click", (e) => {
-      if (e.target === transcriptModal) {
-        transcriptModal.classList.add("hide");
-      }
-    });
-  }
-});
-
+function createButton(text, className, onClick) {
+  const btn = document.createElement("button");
+  btn.className = className;
+  btn.textContent = text;
+  btn.addEventListener("click", onClick);
+  return btn;
+}

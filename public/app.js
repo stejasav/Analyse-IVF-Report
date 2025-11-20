@@ -1,6 +1,9 @@
 const modal = document.getElementById("modal");
 const openUpload = document.getElementById("openUpload");
+const navInsightsBtn = document.getElementById("navInsightsBtn");
+const ctaUploadBtn = document.getElementById("ctaUploadBtn");
 const cancelBtn = document.getElementById("cancel");
+
 const fileInput = document.getElementById("fileInput");
 const submitFiles = document.getElementById("submitFiles");
 const dropzone = document.getElementById("dropzone");
@@ -15,6 +18,7 @@ function openModal() {
 function hideModal() {
   modal.classList.add("hidden");
 }
+
 function showLoading() {
   loading.classList.remove("hidden");
 }
@@ -23,10 +27,12 @@ function hideLoading() {
 }
 
 // ---------- Event Listeners ----------
-openUpload.addEventListener("click", openModal);
-document.getElementById("navUploadBtn").addEventListener("click", openModal);
-document.getElementById("ctaUploadBtn").addEventListener("click", openModal);
-cancelBtn.addEventListener("click", hideModal);
+openUpload?.addEventListener("click", openModal);
+navInsightsBtn?.addEventListener("click", () => {
+  window.location.href = "/insights.html";
+});
+ctaUploadBtn?.addEventListener("click", openModal);
+cancelBtn?.addEventListener("click", hideModal);
 
 // ---------- File Handling ----------
 fileInput.addEventListener("change", (e) => {
@@ -38,53 +44,62 @@ dropzone.addEventListener("dragover", (e) => {
   e.preventDefault();
   dropzone.classList.add("dragover");
 });
-dropzone.addEventListener("dragleave", () =>
-  dropzone.classList.remove("dragover")
-);
+
+dropzone.addEventListener("dragleave", () => {
+  dropzone.classList.remove("dragover");
+});
+
 dropzone.addEventListener("drop", (e) => {
   e.preventDefault();
   dropzone.classList.remove("dragover");
+
   const dropped = Array.from(e.dataTransfer.files);
   files = [...files, ...dropped].slice(0, 10);
+
   fileInput.value = "";
   renderFileList();
 });
+
 dropzone.addEventListener("click", () => fileInput.click());
 
+// ---------- FILE LIST UI ----------
 function renderFileList() {
   fileList.innerHTML = "";
+
   if (!files.length) return;
+
   files.forEach((f, idx) => {
     const row = document.createElement("div");
     row.className = "file-item";
+
     row.innerHTML = `
       <span class="name">${f.name}</span>
       <span class="badge">${(f.size / 1024 / 1024).toFixed(2)} MB</span>
-      <button class="btn" data-remove="${idx}">Remove</button>
+      <button class="btn remove-file" data-index="${idx}">Remove</button>
     `;
+
     fileList.appendChild(row);
   });
 
-  fileList.querySelectorAll("[data-remove]").forEach((btn) => {
+  fileList.querySelectorAll(".remove-file").forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      const i = Number(e.target.getAttribute("data-remove"));
-      files.splice(i, 1);
+      const index = Number(e.target.dataset.index);
+      files.splice(index, 1);
       renderFileList();
     });
   });
 }
 
+// ---------- SUBMIT FILES ----------
 submitFiles.addEventListener("click", async () => {
-  if (!files.length) {
-    alert("Please add at least one file.");
-    return;
-  }
+  if (!files.length) return alert("Please add at least one file.");
 
   const fd = new FormData();
   files.forEach((f) => fd.append("files", f));
 
   hideModal();
   showLoading();
+
   submitFiles.disabled = true;
   submitFiles.textContent = "Analyzing...";
 
@@ -98,14 +113,12 @@ submitFiles.addEventListener("click", async () => {
     });
 
     const data = await res.json();
-    console.log("✅ Gemini AI response:", data);
 
     hideLoading();
     submitFiles.disabled = false;
     submitFiles.textContent = "Analyze Reports";
 
     if (!res.ok || !data.ok) {
-      console.error("Server error:", data);
       alert(data?.error || "Something went wrong. Please try again.");
       return;
     }
@@ -118,12 +131,12 @@ submitFiles.addEventListener("click", async () => {
         data: data.data,
       })
     );
+
     window.location.href = "/insights.html";
   } catch (err) {
     hideLoading();
     submitFiles.disabled = false;
     submitFiles.textContent = "Analyze Reports";
-    console.error("Analysis error:", err);
     alert("Failed to analyze files. Please try again.");
   }
 });

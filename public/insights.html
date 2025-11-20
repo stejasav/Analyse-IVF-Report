@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
   <style>
+    /* ------------------------------ ROOT ------------------------------ */
     :root {
       --accent: #1F232D;
       --accent-hover: #2AD497;
@@ -19,64 +21,79 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    html, body {
-      height: 100%;
-    }
-    
+
+    html, body { height: 100%; overflow-x: hidden; }
+
     body {
       font-family: "Poppins", sans-serif;
       color: var(--text);
       line-height: 1.6;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* Page wrapper to push footer down */
     .page-wrapper {
       flex: 1 0 auto;
       display: flex;
       flex-direction: column;
     }
 
-    /* Navbar */
+    /* ------------------------------ NAVBAR ------------------------------ */
     nav {
+      height: 72px;
       background: #fff;
       border-bottom: 1px solid var(--border);
       position: fixed;
       top: 0; left: 0; right: 0;
-      height: 72px;
+      z-index: 10;
+      padding: 0 8%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 8%;
-      z-index: 10;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
+
     nav img { height: 50px; cursor: pointer; }
+
     nav button {
       background: var(--accent);
       color: #fff;
-      border: none;
-      border-radius: 6px;
       padding: 10px 22px;
+      border-radius: 6px;
+      border: none;
       font-weight: 500;
       cursor: pointer;
       transition: 0.3s ease;
     }
+
     nav button:hover {
       background: var(--accent-hover);
       color: var(--accent);
       box-shadow: 0 0 12px rgba(42,212,151,0.3);
     }
 
-    /* Header */
-    .page-header { text-align: center; padding-top: 110px; padding-bottom: 10px; }
-    .page-header h1 { font-size: 2rem; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
-    .page-header p { color: var(--muted); font-size: 1rem; max-width: 640px; margin: 0 auto; }
+    /* ------------------------------ HEADER ------------------------------ */
+    .page-header {
+      text-align: center;
+      padding-top: 110px;
+      padding-bottom: 10px;
+    }
 
-    /* Centered wrapper for status + cards + disclaimer */
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ------------------------------ MAIN WRAPPER ------------------------------ */
     .main-container {
       max-width: 1400px;
       margin: 0 auto;
@@ -84,81 +101,75 @@
       flex: 1;
     }
 
-    /* Status Banner */
+    /* ------------------------------ STATUS BANNERS ------------------------------ */
     .status-banner {
       background: #f0fdf4;
       border: 1px solid #bbf7d0;
-      border-radius: 10px;
-      width: 100%;
       margin: 24px auto;
       padding: 18px 24px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
+      width: 100%;
       text-align: center;
-      box-shadow: 0 2px 6px rgba(42, 212, 151, 0.08);
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(42,212,151,0.08);
       color: #065f46;
       font-weight: 600;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
     }
 
-    /* Empty state banner */
     .status-banner.empty {
       background: #fffbeb;
       border: 1px solid #fcd34d;
       color: #92400e;
     }
 
-    /* Empty state container */
+    /* ------------------------------ EMPTY STATE ------------------------------ */
     .empty-state {
       text-align: center;
       padding: 60px 20px;
       max-width: 600px;
       margin: auto;
     }
+
     .empty-state-icon {
       font-size: 4rem;
       margin-bottom: 20px;
       opacity: 0.7;
     }
+
     .empty-state h2 {
       font-size: 1.5rem;
+      font-weight: 600;
       color: var(--accent);
       margin-bottom: 12px;
-      font-weight: 600;
     }
+
     .empty-state p {
       color: var(--muted);
       font-size: 1rem;
       line-height: 1.8;
       margin-bottom: 30px;
     }
+
     .empty-state button {
       background: var(--accent);
       color: #fff;
-      border: none;
-      border-radius: 8px;
       padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
       font-size: 1rem;
-      font-weight: 500;
       cursor: pointer;
       transition: 0.3s ease;
     }
+
     .empty-state button:hover {
       background: var(--accent-hover);
       color: var(--accent);
       box-shadow: 0 0 15px rgba(42,212,151,0.3);
     }
 
-    /* Masonry Container */
-    .container {
-      column-count: 2;
-      column-gap: 28px;
-      margin-top: 10px;
-      margin-bottom: 30px;
-    }
-
-        /* Uploaded files section */
+    /* ------------------------------ FILES SECTION ------------------------------ */
     .files-section {
       margin-top: 30px;
       margin-bottom: 20px;
@@ -178,38 +189,37 @@
     }
 
     .file-card {
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #f9fafb;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
     .file-name {
-      font-size: 0.95rem;
       color: var(--accent);
       word-break: break-all;
+      font-size: 0.95rem;
       padding-right: 10px;
     }
 
     .file-actions {
       display: flex;
       gap: 8px;
-      flex-shrink: 0;
     }
 
     .file-btn {
-      border: none;
-      border-radius: 6px;
       padding: 8px 14px;
       font-size: 0.85rem;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 500;
+      border: none;
       background: var(--accent);
       color: #fff;
+      font-weight: 500;
       transition: 0.2s ease;
       white-space: nowrap;
     }
@@ -217,7 +227,7 @@
     .file-btn:hover {
       background: var(--accent-hover);
       color: var(--accent);
-      box-shadow: 0 0 10px rgba(42, 212, 151, 0.25);
+      box-shadow: 0 0 10px rgba(42,212,151,0.25);
     }
 
     .file-btn.secondary-btn {
@@ -226,196 +236,187 @@
       border: 1px solid var(--border);
     }
 
-    .file-btn.secondary-btn:hover {
-      background: var(--accent-hover);
-      color: var(--accent);
-    }
-
     @media (max-width: 900px) {
-      .file-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-      }
-      .file-actions {
-        width: 100%;
-        justify-content: flex-start;
-        flex-wrap: wrap;
-      }
+  .file-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .file-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+
+    /* ------------------------------ MASONRY (CARDS) ------------------------------ */
+    .container {
+      column-count: 2;
+      column-gap: 28px;
+      margin-top: 10px;
+      margin-bottom: 30px;
     }
 
-    /* Card */
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 10px;
       padding: 24px;
       margin-bottom: 28px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      transition: all 0.25s ease;
-      break-inside: avoid;
+      border-radius: 10px;
       display: inline-block;
       width: 100%;
+      break-inside: avoid;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
+
     .card-header {
-      border-bottom: 2px solid #f3f4f6;
       padding-bottom: 12px;
       margin-bottom: 16px;
+      border-bottom: 2px solid #f3f4f6;
     }
+
     .card-header h2 {
       font-size: 1.15rem;
       font-weight: 600;
       color: var(--accent);
-      letter-spacing: -0.01em;
-    }
-    .card-content {
-      font-size: 0.95rem;
-      line-height: 1.7;
-      color: #374151;
     }
 
-    /* Warning card */
+    .card-content {
+      font-size: 0.95rem;
+      color: #374151;
+      line-height: 1.7;
+    }
+
     .card.warning {
       background: var(--warning-bg);
       border-left: 5px solid #ef4444;
     }
 
-    /* List styles */
-    .list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+    .list { list-style: none; margin: 0; padding: 0; }
+
     .list li {
       background: #f9fafb;
-      padding: 14px 16px;
       border-left: 3px solid var(--accent-hover);
       border-radius: 6px;
+      padding: 14px 16px;
       margin-bottom: 10px;
-      font-size: 0.93rem;
-      line-height: 1.6;
       color: #374151;
+      font-size: 0.93rem;
     }
+
     .list.warnings li {
       background: #fef2f2;
       border-left-color: #ef4444;
     }
-    .list.success li {
-      background: #f0fdf4;
-      border-left-color: #10b981;
-    }
 
-    /* Disclaimer */
+    /* ------------------------------ DISCLAIMER ------------------------------ */
     .disclaimer {
-      width: 100%;
       background: #fff8e6;
       border: 1px solid #fcd34d;
-      border-radius: 8px;
       padding: 28px 24px;
+      border-radius: 8px;
       margin: 20px auto 50px;
-      box-shadow: 0 2px 8px rgba(251,191,36,0.08);
       text-align: center;
+      width: 100%;
+      box-shadow: 0 2px 8px rgba(251,191,36,0.08);
     }
+
     .disclaimer-header {
       display: flex;
-      align-items: center;
       justify-content: center;
       gap: 8px;
       margin-bottom: 10px;
     }
-    .disclaimer-header h3 { color: #92400e; font-size: 1rem; font-weight: 600; }
+
+    .disclaimer-header h3 {
+      color: #92400e;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
     .disclaimer p {
-      color: #78350f;
       font-size: 0.95rem;
+      color: #78350f;
       line-height: 1.6;
       max-width: 850px;
       margin: 0 auto;
     }
 
-    /* CTA */
+    /* ------------------------------ CTA BUTTON ------------------------------ */
     .cta { text-align: center; margin-bottom: 80px; }
+
     .cta button {
       background: var(--accent);
       color: #fff;
-      border: none;
-      border-radius: 8px;
       padding: 14px 32px;
+      border-radius: 8px;
+      border: none;
       font-size: 1rem;
-      font-weight: 500;
       cursor: pointer;
+      font-weight: 500;
       transition: 0.3s ease;
     }
+
     .cta button:hover {
       background: var(--accent-hover);
       color: var(--accent);
       box-shadow: 0 0 15px rgba(42,212,151,0.3);
     }
 
+    /* ------------------------------ TRANSCRIPT MODAL ------------------------------ */
     .modal {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      inset: 0;
       background: rgba(0,0,0,0.55);
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 999;
     }
-    
-    /* Transcription */
+
     .modal-content {
       width: 90%;
-      max-width: 700px;
+      max-width: 800px;
       background: #fff;
       padding: 24px;
       border-radius: 12px;
-      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
       max-height: 80vh;
       overflow-y: auto;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
     }
 
     .close-btn {
-      cursor: pointer;
       float: right;
       font-size: 26px;
+      cursor: pointer;
       color: #444;
     }
 
-    pre {
+    #modalTranscript {
+      background: #fafafa;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      max-height: 65vh;
+      overflow-y: auto;
+      color: #333;
+      font-family: "Courier New", monospace;
       white-space: pre-wrap;
-      word-wrap: break-word;
-      font-size: 0.95rem;
-      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.5;
     }
-#transcriptModal .modal-content {
-    max-width: 800px;
-    width: 90%;
-}
 
-#modalTranscript {
-    white-space: pre-wrap;
-    font-family: "Courier New", monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    background: #fafafa;
-    padding: 16px;
-    border-radius: 8px;
-    max-height: 65vh;
-    overflow-y: auto;
-    border: 1px solid #ddd;
-    color: #333;
-}
-
-
-    /* Footer */
+    /* ------------------------------ FOOTER ------------------------------ */
     .main-footer {
-      flex-shrink: 0;
       background: var(--footer-bg);
-      color: #ffffff;
-      padding: 28px 5%;
+      color: #fff;
+      padding: 15px 6%;
       font-size: 0.9rem;
-      margin-top: auto;
+      font-family: "Poppins", sans-serif;
+      flex-shrink: 0;
     }
+
     .footer-content {
       display: flex;
       align-items: center;
@@ -423,131 +424,120 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
     .footer-links {
       display: flex;
       align-items: center;
       gap: 12px;
       flex-wrap: wrap;
     }
-    .footer-links a { color: #ffffff; text-decoration: none; transition: color 0.2s ease; }
-    .footer-links a:hover { color: var(--accent-hover); }
-    .footer-links span { color: rgba(255,255,255,0.5); }
-    .footer-copy { color: rgba(255,255,255,0.85); text-align: right; }
 
-    /* Hide elements when empty */
-    .hide { display: none !important; }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-      .container { column-count: 1; }
-      .main-container { padding: 0 5%; }
-      nav { padding: 0 5%; }
-      nav img { height: 44px; }
-      .page-header p{ margin: 0 5px;}
-      .footer-content { flex-direction: column; text-align: center; gap: 10px; }
-      .footer-copy { text-align: center; }
-      .empty-state { padding: 40px 20px; }
-      .empty-state-icon { font-size: 3rem; }
+    .footer-links a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.2s ease;
     }
 
-    /* ---------- HISTORY BUBBLE ---------- */
+    .footer-links a:hover {
+      color: var(--accent-hover);
+    }
+
+    .footer-links span {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-copy { color: rgba(255,255,255,0.85); }
+
+    /* ------------------------------ HISTORY BUBBLE ------------------------------ */
     .history-bubble {
       position: fixed;
       right: 32px;
       bottom: 32px;
       width: 68px;
       height: 68px;
+      background: #fff;
       border-radius: 50%;
-      border: none;
-      background: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
       cursor: pointer;
+      border: none;
       z-index: 40;
-      transition: all 0.25s ease;
-    }
-
-    .history-bubble:hover {
-      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .history-bubble:active {
-      transform: translateY(-1px);
-      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      transition: 0.25s;
     }
 
     .history-bubble-icon {
       width: 36px;
       height: 36px;
-      transition: transform 0.25s ease;
+    }
+
+    /* ------------------------------ UTILITY ------------------------------ */
+    .hide { display: none !important; }
+
+    /* ------------------------------ RESPONSIVE ------------------------------ */
+    @media (max-width: 900px) {
+      .container { column-count: 1; }
+      nav { padding: 0 5%; }
+      nav img { height: 44px; }
+      .main-container { padding: 0 5%; }
+      .page-header p { margin: 0 5px; }
     }
 
     @media (max-width: 600px) {
+      .footer-content { flex-direction: column; text-align: center; }
+      .footer-copy { text-align: center; }
       .history-bubble {
-        width: 60px;
-        height: 60px;
-        right: 20px;
-        bottom: 20px;
+        right: 20px; bottom: 20px;
+        width: 60px; height: 60px;
       }
-      
-      .history-bubble-icon {
-        width: 30px;
-        height: 30px;
-      }
+      .history-bubble-icon { width: 30px; height: 30px; }
     }
   </style>
 </head>
 
 <body>
   <div class="page-wrapper">
-    <!-- Navbar -->
+
+    <!-- NAVBAR -->
     <nav>
-      <img src="./images/logo.png" alt="Analyse My IVF Reports" onclick="window.location.href='/'" />
+      <img src="./images/logo.png" onclick="window.location.href='/'" />
       <button onclick="window.location.href='/'">Upload New Reports</button>
     </nav>
 
-    <!-- Header -->
+    <!-- HEADER -->
     <div class="page-header">
       <h1>Your IVF Report Insights</h1>
       <p>AI-driven fertility insights to help you understand your reports before your next consultation.</p>
     </div>
 
-    <!-- Main content area -->
+    <!-- MAIN CONTAINER -->
     <div class="main-container">
 
-      <!-- Status Banner -->
-      <div id="statusBanner" class="status-banner hide">
-        ✓ Analysis complete — 2 documents processed successfully
-      </div>
+      <div id="statusBanner" class="status-banner hide"></div>
 
-      <!-- Empty State Banner -->
-      <div id="emptyBanner" class="status-banner empty">
-        ⚠️ No Analysis Found — Please upload reports first.
-      </div>
+      <div id="emptyBanner" class="status-banner empty">⚠️ No Analysis Found — Please upload reports first.</div>
 
-      <!-- Empty State Content -->
       <div id="emptyState" class="empty-state">
         <div class="empty-state-icon">📊</div>
         <h2>No Reports Analyzed Yet</h2>
         <p>
-          Upload your IVF reports to receive personalized AI-driven insights that can help you better understand 
-          your fertility journey and prepare for your next consultation with confidence.
+          Upload your IVF reports to receive personalized insights that help you better understand
+          your fertility journey and prepare for your next consultation.
         </p>
         <button onclick="window.location.href='/'">Upload Your First Report</button>
       </div>
 
-      <!-- Uploaded Files Section -->
+      <!-- Uploaded Files -->
       <section id="filesSection" class="files-section hide">
         <h2 class="files-title">Uploaded Reports</h2>
         <div id="filesList" class="files-list"></div>
       </section>
 
-      <!-- Cards -->
+      <!-- Results Cards -->
       <div id="insightsContent" class="container hide"></div>
 
-      <!-- Disclaimer-->
+      <!-- Disclaimer -->
       <div id="disclaimer" class="disclaimer hide">
         <div class="disclaimer-header">
           <span class="icon">⚕️</span>
@@ -567,7 +557,7 @@
     </div>
   </div>
 
-  <!-- Footer -->
+  <!-- FOOTER -->
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-links">
@@ -578,20 +568,17 @@
         <a href="#">Contact Us</a>
       </div>
       <div class="footer-copy">
-        <p>© 2025 Analyse My IVF Reports — All Rights Reserved.</p>
+        © 2025 Analyse My IVF Reports — All Rights Reserved.
       </div>
     </div>
   </footer>
 
-  <button
-    id="historyBubble"
-    class="history-bubble"
-    title="View previous insights"
-  >
-    <img src="https://cdn-icons-png.flaticon.com/512/2961/2961948.png" alt="History" class="history-bubble-icon">
+  <!-- HISTORY BUBBLE -->
+  <button id="historyBubble" class="history-bubble" title="View previous insights">
+    <img src="https://cdn-icons-png.flaticon.com/512/2961/2961948.png" class="history-bubble-icon" />
   </button>
 
-  <!-- Transcript Modal -->
+  <!-- TRANSCRIPT MODAL -->
   <div id="transcriptModal" class="modal hide">
     <div class="modal-content">
       <span id="closeTranscript" class="close-btn">&times;</span>

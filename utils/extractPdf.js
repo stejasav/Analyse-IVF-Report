@@ -1,4 +1,3 @@
-// utils/extractPdf.js
 import fs from "fs";
 
 export async function extractPdfText(filePath) {

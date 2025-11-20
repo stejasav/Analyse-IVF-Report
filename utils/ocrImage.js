@@ -1,4 +1,3 @@
-// utils/ocrImage.js
 import Tesseract from "tesseract.js";
 import sharp from "sharp";
 

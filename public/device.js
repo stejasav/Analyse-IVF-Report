@@ -1,4 +1,3 @@
-//device.js
 function generateUUID() {
   return "xxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
@@ -12,9 +11,6 @@ let deviceId = localStorage.getItem("device_id");
 if (!deviceId) {
   deviceId = generateUUID();
   localStorage.setItem("device_id", deviceId);
-  console.log("🆕 Generated new device_id:", deviceId);
-} else {
-  // console.log("🔑 Existing device_id:", deviceId);
 }
 
 window.__DEVICE_ID__ = deviceId;

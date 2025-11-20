@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Analyse My IVF Reports – Trusted Fertility Insights</title>
+  <title>Analyse Your IVF Reports – Trusted Fertility Insights</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="icon" type="image/x-icon" href="./images/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
 </head>
 <body>
+
   <!-- Navbar -->
-  <nav class="navbar">
-    <div class="nav-content">
-      <img src="./images/logo.png" alt="Analyse My IVF Reports" class="logo-img" />
-      <button id="navUploadBtn" class="btn small">Upload Reports</button>
-    </div>
+  <nav class="nav-bar">
+    <img src="./images/logo.png" onclick="window.location.href='/'" class="logo-img" />
+    <button id="navInsightsBtn" class="nav-btn">View Insights</button>
   </nav>
+
 
   <!-- Hero Section -->
   <section class="hero">
@@ -63,12 +63,14 @@
         <p>Simply drag and drop or select your IVF test results, scans, and medical documents.</p>
       </div>
       <div class="step-arrow">→</div>
+
       <div class="step">
         <div class="step-number">2</div>
         <h3>AI Analysis</h3>
         <p>Our advanced AI instantly reads and interprets your medical data with precision.</p>
       </div>
       <div class="step-arrow">→</div>
+
       <div class="step">
         <div class="step-number">3</div>
         <h3>Get Clear Insights</h3>
@@ -87,16 +89,19 @@
           <h4>Zero Data Storage</h4>
           <p>Your reports are never saved to any server. Analysis happens in real-time and data is immediately discarded.</p>
         </div>
+
         <div class="trust-item">
           <span class="trust-icon">⚕️</span>
           <h4>Medical-Grade AI</h4>
           <p>Powered by advanced language models trained on medical literature to understand fertility reports accurately.</p>
         </div>
+
         <div class="trust-item">
           <span class="trust-icon">✨</span>
           <h4>Always Free</h4>
           <p>No hidden costs, no subscriptions. We believe everyone deserves access to understanding their health.</p>
         </div>
+
         <div class="trust-item">
           <span class="trust-icon">👥</span>
           <h4>Not Medical Advice</h4>
@@ -120,11 +125,22 @@
     <div class="modal-card">
       <h2>Upload your reports</h2>
       <p>Accepted: PDF / JPG / PNG (max 15 MB each)</p>
+
       <div id="dropzone" class="dropzone">
         <p>Drag & drop files here or click to browse</p>
       </div>
-      <input id="fileInput" type="file" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,application/pdf,image/*" style="display:none;" />
+
+      <!-- FIXED MOBILE ISSUE -->
+      <input 
+        id="fileInput" 
+        type="file" 
+        multiple 
+        accept=".pdf,application/pdf,.jpg,.jpeg,.png,.webp,image/*"
+        style="display:none;"
+      />
+
       <div id="fileList" class="file-list"></div>
+
       <div class="actions">
         <button id="submitFiles" class="btn primary">Analyse</button>
         <button id="cancel" class="btn secondary">Cancel</button>
@@ -137,12 +153,6 @@
     <div class="spinner"></div>
     <p>Analysing your reports…</p>
   </div>
-
-  <!-- Results -->
-  <section class="results container hidden" id="results">
-    <div id="resultsContent"></div>
-    <div id="resultsError" class="results-error hidden"></div>
-  </section>
 
   <!-- Footer -->
   <footer class="main-footer">
@@ -159,7 +169,9 @@
       </div>
     </div>
   </footer>
+
   <script src="./device.js"></script>
   <script src="./app.js"></script>
+
 </body>
 </html>

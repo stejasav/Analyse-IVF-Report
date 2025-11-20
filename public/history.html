@@ -113,6 +113,68 @@
       color: var(--muted);
     }
 
+    /* ---------- FOOTER (Modern Version) ---------- */
+    .main-footer {
+      background: #41444B;
+      color: #ffffff;
+      padding: 5px 6%;
+      font-size: 0.9rem;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .footer-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #ffffff;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--accent-hover);
+    }
+
+    .footer-links span {
+      color: rgba(255,255,255,0.5);
+    }
+
+    .footer-copy {
+      color: rgba(255,255,255,0.85);
+      font-weight: 400;
+      text-align: right;
+    }
+
+    /* ---------- FOOTER MOBILE ---------- */
+    @media (max-width: 600px) {
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+      }
+
+      .footer-links {
+        /* flex-direction: column; */
+        gap: 6px;
+      }
+
+      .footer-copy {
+        text-align: center;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -134,6 +196,21 @@
   <div id="emptyState" class="no-history" style="display:none;">
     No past analyses found. Upload a report to get started!
   </div>
+
+  <footer class="main-footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <span>|</span>
+        <a href="#">Terms & Conditions</a>
+        <span>|</span>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-copy">
+        <p>Copyright © 2025 | All Rights Reserved.</p>
+      </div>
+    </div>
+  </footer>
 
   <script src="./device.js"></script>
   <script src="./history.js"></script>
