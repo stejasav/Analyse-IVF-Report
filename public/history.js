@@ -57,7 +57,7 @@
       const full = await res2.json();
 
       if (!full.ok) {
-        alert("Unable to load analysis.");
+        toast.error("Unable to load this analysis. Please try again.");
         return;
       }
 

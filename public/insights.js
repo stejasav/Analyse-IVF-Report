@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const stored = sessionStorage.getItem("analysisResults");
 
   if (!stored) {
+    toast.warning("No analysed reports found. Please upload reports first.");
     showEmptyState();
     return;
   }
@@ -190,7 +191,7 @@ function renderFiles(files) {
       if (file.url) {
         window.open(file.url, "_blank");
       } else {
-        alert("File preview not available.");
+        toast.error("File preview not available.");
       }
     });
 

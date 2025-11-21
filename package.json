@@ -22,6 +22,7 @@
     "dayjs": "^1.11.19",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "izitoast": "^1.4.0",
     "multer": "^2.0.2",
     "pdf-parse": "^1.1.4",
     "pdf-poppler": "^0.2.3",

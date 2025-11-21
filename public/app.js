@@ -38,6 +38,9 @@ cancelBtn?.addEventListener("click", hideModal);
 fileInput.addEventListener("change", (e) => {
   files = Array.from(e.target.files);
   renderFileList();
+  toast.success(
+    `${files.length} file${files.length > 1 ? "s" : ""} added successfully.`
+  );
 });
 
 dropzone.addEventListener("dragover", (e) => {
@@ -55,6 +58,9 @@ dropzone.addEventListener("drop", (e) => {
 
   const dropped = Array.from(e.dataTransfer.files);
   files = [...files, ...dropped].slice(0, 10);
+  toast.success(
+    `${dropped.length} file${dropped.length > 1 ? "s" : ""} added successfully.`
+  );
 
   fileInput.value = "";
   renderFileList();
@@ -86,13 +92,17 @@ function renderFileList() {
       const index = Number(e.target.dataset.index);
       files.splice(index, 1);
       renderFileList();
+      toast.info("File removed.");
     });
   });
 }
 
 // ---------- SUBMIT FILES ----------
 submitFiles.addEventListener("click", async () => {
-  if (!files.length) return alert("Please add at least one file.");
+  if (!files.length) {
+    toast.warning("Please add at least one file before analysing.");
+    return;
+  }
 
   const fd = new FormData();
   files.forEach((f) => fd.append("files", f));
@@ -119,9 +129,11 @@ submitFiles.addEventListener("click", async () => {
     submitFiles.textContent = "Analyze Reports";
 
     if (!res.ok || !data.ok) {
-      alert(data?.error || "Something went wrong. Please try again.");
+      toast.error(data?.error || "Something went wrong. Please try again.");
       return;
     }
+
+    toast.success("Reports analysed successfully!");
 
     sessionStorage.setItem(
       "analysisResults",
@@ -137,6 +149,6 @@ submitFiles.addEventListener("click", async () => {
     hideLoading();
     submitFiles.disabled = false;
     submitFiles.textContent = "Analyze Reports";
-    alert("Failed to analyze files. Please try again.");
+    toast.error("Failed to analyse files. Please try again.");
   }
 });
