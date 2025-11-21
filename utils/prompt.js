@@ -1,31 +1,39 @@
-export function buildPrompt(joinedTexts) {
-  return `You are an expert medical report analyzer specializing in fertility and IVF reports.
+export function buildPrompt(fileNames) {
+  // We create a list string to tell Gemini exactly what files we are sending
+  const fileList = fileNames.map((name, i) => `${i + 1}. "${name}"`).join("\n");
 
-IMPORTANT: Respond with ONLY a valid JSON object. Do NOT include any text before or after the JSON.
+  return `You are an expert medical report analyzer.
 
-Your JSON MUST follow this structure exactly:
+  I have attached ${fileNames.length} files in the following order:
+  ${fileList}
+  
+  YOUR TASKS:
+  1. **Transcribe**: Read every file. 
+  2. **Analyze**: Generate insights based on the text.
 
-{
-  "summary": "3–4 sentence plain-language overview of the findings",
-  "key_findings": ["Finding 1", "Finding 2", "Finding 3"],
-  "possible_red_flags": ["Concerning results if any"],
-  "recommended_followups": ["Next steps or further tests"],
-  "questions_for_doctor": ["Important questions for doctor"],
-  "transcriptions": {
-    "filename1": "Raw transcription text of file 1",
-    "filename2": "Raw transcription text of file 2"
+  IMPORTANT: Respond with ONLY a valid JSON object.
+
+  Your JSON MUST follow this structure exactly:
+
+  {
+    "summary": "Overview of findings",
+    "key_findings": ["Finding 1", "Finding 2"],
+    "possible_red_flags": ["Red flags"],
+    "recommended_followups": ["Next steps"],
+    "questions_for_doctor": ["Questions"],
+    "transcriptions": {
+      "${fileNames[0]}": "Full extracted text...",
+      "${fileNames[1] || "filename2"}": "Full extracted text..."
+    }
   }
-}
 
-RULES:
-- The *transcriptions* field MUST contain a separate key for each file.
-- Use the exact file names as keys.
-- For each file, include the exact extracted text provided — do NOT summarize or rewrite it.
-- The analysis fields should be based on the contents of all files.
-
-Below is the extracted content for each uploaded file:
-
-${joinedTexts}
-
-Now return ONLY valid JSON in the specified structure.`;
+  TRANSCRIPTION RULES:
+  - The "transcriptions" object MUST contain exactly ${fileNames.length} keys.
+  - The keys MUST match the exact filenames listed above (${fileNames.join(
+    ", "
+  )}).
+  - **For PDFs:** Combine ALL pages into a single string for that filename. Do not create separate keys for pages. Mark page boundaries like this: "\\n--- Page 1 ---\\n [Text] \\n--- Page 2 ---\\n [Text]".
+  - **For Images:** Extract all visible text.
+  - If a file appears empty or is just a logo, return "No readable text found".
+  `;
 }

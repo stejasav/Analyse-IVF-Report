@@ -7,9 +7,7 @@ import dotenv from "dotenv";
 import axios from "axios";
 import { fileURLToPath } from "url";
 
-import { ocrImage } from "./utils/ocrImage.js";
 import { buildPrompt } from "./utils/prompt.js";
-import { extractPdfText } from "./utils/extractPdf.js";
 import db from "./db/database.js";
 
 dotenv.config();
@@ -66,6 +64,15 @@ const upload = multer({
   },
 });
 
+function fileToGenerativePart(filePath, mimeType) {
+  return {
+    inlineData: {
+      data: fs.readFileSync(filePath).toString("base64"),
+      mimeType,
+    },
+  };
+}
+
 // ---------- Health Check ----------
 app.get("/api/health", async (req, res) => {
   try {
@@ -100,50 +107,24 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
     return res.status(400).json({ ok: false, error: "No files uploaded" });
   }
 
-  const processedFiles = [];
-  const allTexts = [];
-
   try {
-    for (const f of files) {
-      const filePath = path.isAbsolute(f.path)
-        ? f.path
-        : path.join(__dirname, f.path);
+    const fileNames = files.map((f) => f.originalname);
+    const promptText = buildPrompt(fileNames);
+    const parts = [{ text: promptText }];
 
-      const ext = path.extname(f.filename).toLowerCase();
-      let text = "";
+    files.forEach((f) => {
+      parts.push(fileToGenerativePart(f.path, f.mimetype));
+    });
 
-      try {
-        text =
-          ext === ".pdf"
-            ? await extractPdfText(filePath)
-            : await ocrImage(filePath);
-
-        const cleaned = text?.trim() || "";
-
-        if (cleaned) {
-          allTexts.push(`### FILE: ${f.originalname}\n${cleaned}`);
-
-          processedFiles.push({
-            name: f.originalname,
-            url: `/uploads/${f.filename}`,
-            transcript: cleaned,
-          });
-        }
-      } catch (err) {
-        console.error(`Failed to extract ${f.originalname}:`, err.message);
-      }
-    }
-
-    if (!allTexts.length) {
-      throw new Error("No readable text extracted from any files.");
-    }
-
-    const prompt = buildPrompt(allTexts.join("\n\n---\n\n"));
+    console.log(`Sending ${files.length} files to Gemini...`);
 
     const response = await axios.post(
       GEMINI_API_URL,
-      { contents: [{ role: "user", parts: [{ text: prompt }] }] },
-      { headers: { "Content-Type": "application/json" }, timeout: 120000 }
+      { contents: [{ role: "user", parts: parts }] },
+      {
+        headers: { "Content-Type": "application/json" },
+        timeout: 120000,
+      }
     );
 
     const raw =
@@ -151,9 +132,10 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
 
     let parsed;
     try {
-      const match = raw.match(/\{[\s\S]*\}/);
-      parsed = JSON.parse(match ? match[0] : raw);
-    } catch {
+      const cleanRaw = raw.replace(/```json/g, "").replace(/```/g, "");
+      parsed = JSON.parse(cleanRaw);
+    } catch (e) {
+      console.error("JSON Parse Error, raw text:", raw);
       parsed = null;
     }
 
@@ -165,6 +147,22 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
       questions_for_doctor: [],
       raw_response: raw,
     };
+
+    const processedFiles = files.map((f) => {
+      const transcript =
+        data.transcriptions?.[f.originalname] ||
+        "Transcript not provided by AI.";
+
+      return {
+        name: f.originalname,
+        url: `/uploads/${f.filename}`,
+        transcript: transcript,
+      };
+    });
+
+    const allTexts = processedFiles.map(
+      (pf) => `### ${pf.name}\n${pf.transcript}`
+    );
 
     const now = new Date().toISOString();
     db.prepare(
@@ -186,6 +184,7 @@ app.post("/api/analyze", upload.array("files", 10), async (req, res) => {
       data,
     });
   } catch (err) {
+    console.error("Analyze Error:", err.response?.data || err.message);
     res.status(500).json({ ok: false, error: err.message });
   }
 });

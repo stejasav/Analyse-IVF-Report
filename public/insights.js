@@ -2,6 +2,8 @@ let ANALYSIS_FILES = [];
 window.__ANALYSIS_DATA__ = JSON.parse(
   sessionStorage.getItem("analysisResults")
 );
+const BACKEND_TRANSCRIPTIONS =
+  window.__ANALYSIS_DATA__?.data?.transcriptions || {};
 
 document.addEventListener("DOMContentLoaded", () => {
   const stored = sessionStorage.getItem("analysisResults");
@@ -218,10 +220,15 @@ function openTranscriptModal(file) {
 
   fileNameEl.textContent = file.name || "Report Transcript";
 
-  const transcript = file.transcript;
-  transcriptEl.innerHTML = transcript
-    ? escapeHtml(transcript).replace(/\n/g, "<br>")
-    : "No transcription available for this file.";
+  // const transcript = file.transcript;
+  // transcriptEl.innerHTML = transcript
+  //   ? escapeHtml(transcript).replace(/\n/g, "<br>")
+  //   : "No transcription available for this file.";
+  let transcript =
+    BACKEND_TRANSCRIPTIONS[file.name] ||
+    BACKEND_TRANSCRIPTIONS[file.name.trim()] ||
+    "No transcription available for this file.";
+  transcriptEl.innerHTML = escapeHtml(transcript).replace(/\n/g, "<br>");
 
   modal.classList.remove("hide");
 }
